@@ -1,28 +1,25 @@
 import Controller.Client.Client;
 import Controller.Server.Server;
+import Model.*;
 
 public class BattlseShip {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        Server s= new Server();
+        SuperPatrol superPatrol=new SuperPatrol();
 
-        Client c=new Client();
+        Board b = new BoardImp();
+        Carrier c= new Carrier();
+        PatrolBoat p= new PatrolBoat();
+        Destroyer d= new Destroyer();
+        SuperPatrol s= new SuperPatrol();
+        BattleShip bt = new BattleShip();
 
-        Thread t1= new Thread(){
-            @Override
-            public void run() {
-                s.run();
-            }
-        };
-        t1.start();
-        Thread t2= new Thread(){
-            @Override
-            public void run()
-            {
-                c.run();
-            }
-        };
+        b.initializeBoard();
+        c.deployShip();
+        p.deployShip();
+        d.deployShip();
+        s.deployShip();
+        bt.deployShip();
 
-
+        
     }
 }
