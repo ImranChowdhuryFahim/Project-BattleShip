@@ -7,9 +7,9 @@ public class PatrolBoat extends Ship{
 
     public PatrolBoat(Board board, int instanceNo)
     {
-        this.shipHealth=ShipInfo.carrierSize;
-        this.shipSize=ShipInfo.carrierSize;
-        this.shipType=ShipInfo.carrierType;
+        this.shipHealth=ShipInfo.patrolBoatSize;
+        this.shipSize=ShipInfo.patrolBoatSize;
+        this.shipType=ShipInfo.patrolBoatType;
         this.shipInstance=instanceNo;
         this.board=board.getBoard();
     }

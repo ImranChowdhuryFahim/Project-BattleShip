@@ -82,24 +82,24 @@ public abstract class Ship{
             }
 
 
-                System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
-            System.out.println();
-
-            for(int row=0 ; row < 10 ; row++ ) {
-                System.out.print((row+1) + "");
-                for (int column = 0; column < 15; column++) {
-                    if(board[row][column]!=-1)
-                    {
-                        System.out.print("\t"+"c"+shipInstance);
-                    }
-                    else{
-                        System.out.print("\t"+"~");
-                    }
-
-
-                }
-                System.out.println("\n");
-            }
-                System.out.println();
+//                 System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
+//             System.out.println();
+//
+//             for(int row=0 ; row < 10 ; row++ ) {
+//                 System.out.print((row+1) + "");
+//                 for (int column = 0; column < 15; column++) {
+//                     if(board[row][column]!=-1)
+//                     {
+//                         System.out.print("\t"+"c"+shipInstance);
+//                     }
+//                     else{
+//                         System.out.print("\t"+"~");
+//                     }
+//
+//
+//                 }
+//                 System.out.println("\n");
+//             }
+//                 System.out.println();
     }
 }

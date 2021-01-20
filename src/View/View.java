@@ -1,5 +1,7 @@
 package View;
 
+import Model.Board.BoardImp;
+
 public interface View {
 
     public void printWelcomeMessage();
@@ -12,7 +14,7 @@ public interface View {
 
     public void printTurnMessage();
 
-    public void printBoard(int[][] board);
+    public void printBoard(BoardImp board);
 
     public void printInstructionsMessage();
 

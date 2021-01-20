@@ -6,9 +6,9 @@ public class Destroyer extends Ship{
 
     public Destroyer(Board board, int instanceNo)
     {
-        this.shipHealth=ShipInfo.carrierSize;
-        this.shipSize=ShipInfo.carrierSize;
-        this.shipType=ShipInfo.carrierType;
+        this.shipHealth=ShipInfo.destroyerSize;
+        this.shipSize=ShipInfo.destroyerSize;
+        this.shipType=ShipInfo.destroyerType;
         this.shipInstance=instanceNo;
         this.board=board.getBoard();
     }
