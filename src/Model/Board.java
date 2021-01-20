@@ -5,12 +5,10 @@ public interface Board {
 
     public void initializeBoard();
 
-    public boolean isHit();
+    public int[][] getBoard();
 
-    public boolean isSunk();
+    public boolean isHit(int posX, int posY);
 
-    public void deployShips();
-
-    public void fire();
+    public void fire(int posX, int posY);
     
 }

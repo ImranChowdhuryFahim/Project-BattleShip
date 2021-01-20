@@ -3,19 +3,19 @@
 public class BoardImp implements Board {
     static int boardRow = 10;
     static int boardColumn = 15;
-    static int[][] board = new int[boardRow][boardColumn];
-    
+    public static int[][] board = new int[boardRow][boardColumn];
+
 
 
 
     @Override
     public void initializeBoard() {
-        
+
         //Initializing game board
 
         for(int i=0; i<boardRow; i++)
         {
-            
+
 
             for(int j=0; j<boardColumn; j++)
             {
@@ -32,11 +32,8 @@ public class BoardImp implements Board {
         for(int row=0 ; row < 10 ; row++ ) {
             System.out.print((row+1) + "");
             for (int column = 0; column < 15; column++) {
-                if(board[row][column]==-1)
-                {
-                    System.out.print("\t"+"~");
-                }
-                
+                System.out.print("\t"+"~");
+
 
             }
             System.out.println("\n");
@@ -46,26 +43,19 @@ public class BoardImp implements Board {
     }
 
     @Override
-    public boolean isHit() {
-        // TODO Auto-generated method stub
-        return false;
+    public int[][] getBoard() {
+        return board;
     }
 
     @Override
-    public boolean isSunk() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isHit(int posX, int posY) {
+        return board[posX][posY] != -1;
     }
 
     @Override
-    public void deployShips() {
-        // TODO Auto-generated method stub
+    public void fire(int posX, int posY) {
 
-    }
 
-    @Override
-    public void fire() {
-        // TODO Auto-generated method stub
 
     }
 }
