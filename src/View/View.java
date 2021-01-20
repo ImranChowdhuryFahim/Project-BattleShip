@@ -14,8 +14,18 @@ public interface View {
 
     public void printTurnMessage();
 
+    public void printHitMessage();
+    public void printMissMessage();
+    public  void printSunkMessage();
+    public void printPoint();
+
     public void printBoard(BoardImp board);
 
     public void printInstructionsMessage();
 
+    public void printWarning();
+    public void propmtInputMessageForRow();
+    public void propmtInputMessageForColumn();
+    public void invalidRowWarning();
+    public void invalidColWarning();
 }

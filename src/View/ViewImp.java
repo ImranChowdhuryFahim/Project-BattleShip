@@ -4,10 +4,19 @@ import Model.Board.BoardImp;
 import Model.Ship.ShipInfo;
 
 public class ViewImp implements View {
-
+    private  String welcomeText = "Welcome to Battle Ship Game ...";
+    private  String menuText = "1. Play with virtual opponent\n 2. Play with human opponent\n Choose option: ";
+    private  String warningMessage = "Please choose a valid option";
+    private String inputMessageForRow = "Input Row(1 to 10)";
+    private String inputMessageForCol = "Input Column(1 to 15)";
+    private  String invalidRowMessage = "Given row is out of the board. Please input a valid one: ";
+    private  String invalidColMessage = "Given column is out of the board. Please input a valid one: ";
+    private String hitMessage = "Congrats! You have hit opponent's ship";
+    private  String missMessage = "Oops!, you have missed";
+    private  String sunkMessage = "Ya hoo!, you have sunk one opponent's ship";
     @Override
     public void printWelcomeMessage() {
-        
+        System.out.println( welcomeText );
     }
 
     @Override
@@ -27,6 +36,26 @@ public class ViewImp implements View {
 
     @Override
     public void printTurnMessage() {
+
+    }
+
+    @Override
+    public void printHitMessage() {
+        System.out.println(hitMessage);
+    }
+
+    @Override
+    public void printMissMessage() {
+        System.out.println(missMessage);
+    }
+
+    @Override
+    public void printSunkMessage() {
+        System.out.println(sunkMessage);
+    }
+
+    @Override
+    public void printPoint() {
 
     }
 
@@ -89,6 +118,34 @@ public class ViewImp implements View {
 
     @Override
     public void printInstructionsMessage() {
-
+        System.out.print(menuText);
     }
+
+    @Override
+    public void printWarning() {
+        System.out.println(warningMessage);
+        printInstructionsMessage();
+    }
+
+    @Override
+    public void propmtInputMessageForRow() {
+        System.out.print(inputMessageForRow);
+    }
+
+    @Override
+    public void propmtInputMessageForColumn() {
+        System.out.print(inputMessageForCol);
+    }
+
+    @Override
+    public void invalidRowWarning() {
+        System.out.println(invalidRowMessage);
+    }
+
+    @Override
+    public void invalidColWarning() {
+        System.out.println(invalidColMessage);
+    }
+
+
 }

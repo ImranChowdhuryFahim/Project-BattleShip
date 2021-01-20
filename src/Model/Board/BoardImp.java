@@ -49,13 +49,15 @@ public class BoardImp implements Board {
 
     @Override
     public boolean isHit(int posX, int posY) {
-        return board[posX][posY] != -1;
+        return board[posX][posY] != -1 && board[posX][posY] != 0;
     }
 
     @Override
     public void fire(int posX, int posY) {
-
-
-
+        board[posX][posY] = 0;
+    }
+    @Override
+    public int getCellValue(int posX, int posY) {
+        return board[posX][posY];
     }
 }
