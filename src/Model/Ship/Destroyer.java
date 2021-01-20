@@ -1,10 +1,10 @@
-package Model;
+package Model.Ship;
 
-import java.util.Random;
+import Model.Board.Board;
 
 public class Destroyer extends Ship{
 
-    public Destroyer(Board board,int instanceNo)
+    public Destroyer(Board board, int instanceNo)
     {
         this.shipHealth=ShipInfo.carrierSize;
         this.shipSize=ShipInfo.carrierSize;

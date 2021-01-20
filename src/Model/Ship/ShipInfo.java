@@ -1,4 +1,4 @@
-package Model;
+package Model.Ship;
 
 public class ShipInfo {
     //Size of Ships

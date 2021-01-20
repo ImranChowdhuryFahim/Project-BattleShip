@@ -1,10 +1,11 @@
-package Model;
+package Model.Ship;
 
-import java.util.Random;
 
-public class BattleShip extends Ship {
+import Model.Board.Board;
 
-    public BattleShip(Board board,int instanceNo)
+public class SuperPatrol extends Ship {
+
+    public SuperPatrol(Board board, int instanceNo)
     {
         this.shipHealth=ShipInfo.carrierSize;
         this.shipSize=ShipInfo.carrierSize;

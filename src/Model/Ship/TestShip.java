@@ -1,6 +1,6 @@
-package Model;
+package Model.Ship;
 
-import java.util.Random;
+import Model.Board.Board;
 
 public class TestShip extends Ship{
     public TestShip(Board board , int instanceNo)

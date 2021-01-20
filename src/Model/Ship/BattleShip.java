@@ -1,9 +1,10 @@
-package Model;
+package Model.Ship;
 
+import Model.Board.Board;
 
-public class SuperPatrol extends Ship {
+public class BattleShip extends Ship {
 
-    public SuperPatrol(Board board,int instanceNo)
+    public BattleShip(Board board, int instanceNo)
     {
         this.shipHealth=ShipInfo.carrierSize;
         this.shipSize=ShipInfo.carrierSize;

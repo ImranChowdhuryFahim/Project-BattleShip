@@ -1,4 +1,4 @@
- package Model;
+ package Model.Board;
 
 public class BoardImp implements Board {
     static int boardRow = 10;

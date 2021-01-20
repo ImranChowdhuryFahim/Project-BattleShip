@@ -1,9 +1,11 @@
-package Model;
+package Model.Ship;
+
+import Model.Board.Board;
 
 
-public class Carrier extends Ship{
+public class PatrolBoat extends Ship{
 
-    public Carrier(Board board,int instanceNo)
+    public PatrolBoat(Board board, int instanceNo)
     {
         this.shipHealth=ShipInfo.carrierSize;
         this.shipSize=ShipInfo.carrierSize;
@@ -11,6 +13,7 @@ public class Carrier extends Ship{
         this.shipInstance=instanceNo;
         this.board=board.getBoard();
     }
+
 
 
 }

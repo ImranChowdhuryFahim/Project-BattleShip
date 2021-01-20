@@ -1,4 +1,5 @@
-import Model.*;
+import Model.Board.Board;
+import Model.Board.BoardImp;
 
 public class BattlseShip {
     public static void main(String[] args) {
@@ -7,9 +8,9 @@ public class BattlseShip {
         Board b = new BoardImp();
 
         b.initializeBoard();
-        Carrier c = new Carrier(b,1);
-
-        c.deployShip();
+//        Carrier c = new Carrier(b,1);
+//
+//        c.deployShip();
 
 
 

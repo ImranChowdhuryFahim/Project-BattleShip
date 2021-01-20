@@ -1,4 +1,4 @@
-package Model;
+package Model.Ship;
 
 import java.util.Random;
 
@@ -18,6 +18,16 @@ public abstract class Ship{
     public void hitShip()
     {
         --shipHealth;
+    }
+
+    public int getShipType()
+    {
+        return shipType;
+    }
+
+    public int getShipInstance()
+    {
+        return shipInstance;
     }
 
     public void deployShip()
