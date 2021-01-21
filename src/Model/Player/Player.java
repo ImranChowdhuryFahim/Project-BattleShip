@@ -123,4 +123,14 @@ public abstract class Player {
         // Child classes will implement this method
     }
 
+    public boolean isAllSunk() {
+        boolean allSunk = true;
+        for ( Ship ship: listOfShips ) {
+            if (!ship.isSunk()) {
+                allSunk = false;
+                break;
+            }
+        }
+        return  allSunk;
+    }
 }
