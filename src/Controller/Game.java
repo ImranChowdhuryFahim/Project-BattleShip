@@ -1,5 +1,6 @@
 package Controller;
 
+import Controller.TakingInput.ConsoleInput;
 import Model.Board.Board;
 import Model.Board.BoardImp;
 import Model.Player.HumanPlayer;
@@ -65,7 +66,7 @@ public class Game {
 
     }
 
-    public void executePlayerTurns()
+    public void executePlayerTurns() throws InterruptedException
     {
         int turnFlag = 0;
         scanner = new Scanner(System.in);
@@ -82,39 +83,79 @@ public class Game {
                   view.propmtInputMessageForRow();
 
 
-                  posX = scanner.nextInt();
+//                  posX = scanner.nextInt();
 
-                  while (posX > 10 || posX < 1) {
+                ConsoleInput con = new ConsoleInput(
+                        1
+                        ,
+                        9,
+                        TimeUnit.SECONDS
+                );
+                long startingTime = System.currentTimeMillis();
+
+                String inputLine = con.readLine();
+
+                if(inputLine != null) {
+                    posX = Integer.parseInt(inputLine);
+                }
+
+//                System.out.println("Done. Your input was: " + posX);
+
+                  while ((posX > 10 || posX < 1) && posX != 0) {
 
                         view.invalidRowWarning();
-                      posX = scanner.nextInt();
+                      inputLine = con.readLine();
+                      if(inputLine != null) {
+                          posX = Integer.parseInt(inputLine);
+                      }
                   }
 
-                  view.propmtInputMessageForColumn();
-                  posY = scanner.nextInt();
+                  if(posX != 0) {
+                      int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
+                      ConsoleInput con1 = new ConsoleInput(
+                              1
+                              ,restTime
+                              ,
+                              TimeUnit.SECONDS
+                      );
 
-                  while (posY > 15 || posY < 1) {
+                      view.propmtInputMessageForColumn();
+                      inputLine = con1.readLine();
+                      if(inputLine != null) {
+                          posY = Integer.parseInt(inputLine);
+                      }
 
-                       view.invalidColWarning();
-                      posY = scanner.nextInt();
+                      while ((posY > 15 || posY < 1) && posY != 0 ) {
+
+                          view.invalidColWarning();
+                          inputLine = con1.readLine();
+                          if(inputLine != null) {
+                              posY = Integer.parseInt(inputLine);
+                          }
+                      }
+                      if(posX > 0 && posY > 0) {
+                          playBoard.fire(posX, posY);
+
+
+                          view.showBoard(playBoard.getBoard());
+
+                          if (virtualPlayer.getCurrentBoard().isHit(posX - 1, posY - 1)) {
+                              turnFlag = 0;
+
+                          } else {
+
+                              turnFlag = 1;
+                          }
+
+                          humanPlayer.performPlayerTurn(virtualPlayer, posX, posY);
+                      } else {
+                          turnFlag = 1;
+                      }
+                  }
+                  else {
+                      turnFlag = 1;
                   }
 
-                  playBoard.fire(posX,posY);
-
-                  view.showBoard(playBoard.getBoard());
-
-                if(virtualPlayer.getCurrentBoard().isHit(posX-1,posY-1))
-                {
-                      turnFlag = 0;
-
-                }
-                else
-                {
-
-                      turnFlag=1;
-                }
-
-                  humanPlayer.performPlayerTurn(virtualPlayer,posX,posY);
 
 
 

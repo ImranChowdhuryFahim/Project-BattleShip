@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 
 public class BattlseShip {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
 ////        SuperPatrol superPatrol=new SuperPatrol();
 //
 //        Board b = new BoardImp();
@@ -59,3 +59,15 @@ public class BattlseShip {
         
     }
 }
+
+/*
+1-> 2 6 7 8 12 13 14
+2-> 6 7 8 9 11 12
+3-> 2 3 4 5 6 7  8 14 15
+4-> 1 2 5 6 9  13
+5-> 1 2 3 4 8 9 10 11 12 13
+6-> 1 8 9 10 11
+7-> 3 4 5 6 7 8 10 11 12
+8-> 2 3 5 6 7 8 9
+9-> 7 11 12 13
+ */
