@@ -25,6 +25,7 @@ public class ViewImp implements View {
     private String gameStartingMessage = "Start Firing\n";
     private String humanPlayerTurnMessage = "It's your Turn\n";
     private String virtualPlayerTurnMessage = "It's Computer's Turn\n";
+    private String alreadyHit = "You have already hit";
 
 
     @Override
@@ -45,6 +46,11 @@ public class ViewImp implements View {
     @Override
     public void printWinMessage() {
 
+    }
+
+    @Override
+    public void printAlreadyHitMessage() {
+        System.out.println(alreadyHit);
     }
 
     @Override

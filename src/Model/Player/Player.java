@@ -52,7 +52,7 @@ public abstract class Player {
     {
         int[] shipQuantity= {2,3,5,8,10};
 
-        for(int i=0; i<5; i++)
+        for(int i=1; i<2; i++)
         {
             
             for(int j=1; j <= shipQuantity[i]; j++ )
@@ -101,7 +101,7 @@ public abstract class Player {
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
         } else if(cellValue <= 5 ) {
-            return ShipInfo.battleShipSize;
+            return ShipInfo.battleShipType;
         } else if (cellValue <= 10) {
             return ShipInfo.destroyerType;
         } else if (cellValue <= 18) {
@@ -139,6 +139,7 @@ public abstract class Player {
             int shipType = cellValueToType(cellValue);
             int shipQuantity = shipTypeToQuantity(shipType);
             int shipInstanceNumber = cellValue - shipType;
+
             for (Ship ship: enemyShipList ) {
                 if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
                     ship.hitShip();
@@ -151,8 +152,19 @@ public abstract class Player {
                 }
             }
 
+            enemyBoard.fire(posX,posY);
+
+
         } else {
-            view.printMissMessage(playerType,playerName);
+
+            if(enemyBoard.getCellValue(posX - 1, posY - 1) == 0)
+            {
+                view.printAlreadyHitMessage();
+            }
+            else{
+                view.printMissMessage(playerType,playerName);
+            }
+
         }
     }
 

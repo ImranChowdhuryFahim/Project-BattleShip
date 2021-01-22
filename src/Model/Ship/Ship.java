@@ -18,6 +18,7 @@ public abstract class Ship{
     public void hitShip()
     {
         --shipHealth;
+
     }
 
     public int getShipType()

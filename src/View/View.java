@@ -12,6 +12,8 @@ public interface View {
 
     public void printWinMessage();
 
+    public void printAlreadyHitMessage();
+
     public void printHumanPlayerTurnMessage();
     public void printVirtualPlayerTurnMessage();
 
