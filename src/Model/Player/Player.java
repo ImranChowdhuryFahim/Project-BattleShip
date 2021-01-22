@@ -52,7 +52,7 @@ public abstract class Player {
     {
         int[] shipQuantity= {2,3,5,8,10};
 
-        for(int i=1; i<2; i++)
+        for(int i=0; i<5; i++)
         {
             
             for(int j=1; j <= shipQuantity[i]; j++ )
