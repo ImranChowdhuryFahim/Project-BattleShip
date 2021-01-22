@@ -103,6 +103,16 @@ public class Game {
 
                   view.showBoard(playBoard.getBoard());
 
+                if(virtualPlayer.getCurrentBoard().isHit(posX-1,posY-1))
+                {
+                      turnFlag = 0;
+
+                }
+                else
+                {
+
+                      turnFlag=1;
+                }
 
                   humanPlayer.performPlayerTurn(virtualPlayer,posX,posY);
 
@@ -111,7 +121,8 @@ public class Game {
 
 
 
-                  turnFlag = 1;
+
+
 
             }
 
@@ -128,9 +139,20 @@ public class Game {
                         posY = random.nextInt(15);
                     }
 
+                if(humanPlayer.getCurrentBoard().isHit(posX-1,posY-1))
+                {
+                    turnFlag = 1;
+                }
+                else{
+                    turnFlag = 0;
+                }
+
+
                     virtualPlayer.performPlayerTurn(humanPlayer,posX,posY);
 
-                    turnFlag = 0;
+
+
+
             }
 
 
