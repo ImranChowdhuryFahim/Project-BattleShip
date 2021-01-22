@@ -12,12 +12,13 @@ public interface View {
 
     public void printWinMessage();
 
-    public void printTurnMessage();
+    public void printHumanPlayerTurnMessage();
+    public void printVirtualPlayerTurnMessage();
 
-    public void printHitMessage();
-    public void printMissMessage();
-    public  void printSunkMessage();
-    public void printPoint();
+    public void printHitMessage(int playerType, String playerName);
+    public void printMissMessage(int playerType, String playerName);
+    public  void printSunkMessage(int playerType, String playerName);
+    public void printPoint(int playerType, int point);
 
     public void printBoard(BoardImp board);
 
@@ -28,4 +29,10 @@ public interface View {
     public void propmtInputMessageForColumn();
     public void invalidRowWarning();
     public void invalidColWarning();
+
+    public void printBoardInitializationMessage();
+    public void printHumanPlayerShipDeploymentMessage();
+    public void printVirtualPlayerShipDeploymentMessage();
+    public void showBoard(int[][] board);
+    public void printGameStartingMessage();
 }

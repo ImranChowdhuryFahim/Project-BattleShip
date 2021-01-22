@@ -1,6 +1,7 @@
 package View;
 
 import Model.Board.BoardImp;
+import Model.Player.VirtualPlayer;
 import Model.Ship.ShipInfo;
 
 public class ViewImp implements View {
@@ -11,9 +12,21 @@ public class ViewImp implements View {
     private String inputMessageForCol = "Input Column(1 to 15)";
     private  String invalidRowMessage = "Given row is out of the board. Please input a valid one: ";
     private  String invalidColMessage = "Given column is out of the board. Please input a valid one: ";
-    private String hitMessage = "Congrats! You have hit opponent's ship";
-    private  String missMessage = "Oops!, you have missed";
-    private  String sunkMessage = "Ya hoo!, you have sunk one opponent's ship";
+    private String humanPlayerHitMessage = "Congrats! You have hit opponent's ship";
+    private String virtualPlayerHitMessage = "Computer has hit your ship";
+    private  String humanPlayerMissMessage = "Oops!, you have missed";
+    private String virtualPlayerMissMessage = "Computer has missed";
+    private  String humanPlayerSunkMessage = "Ya hoo!, you have sunk one opponent's ship";
+    private String virtualPlayerSunkMessage = "Computer has sunk your ship";
+    private String initializingBoardMessage = "Initializing Game Boards\n";
+    private String humanPlayerShipDeployMessage = "Deploying your ships\n";
+    private String printingBoardMessage = "printing board\n";
+    private String virtualPlayerShipDeployMessage = "Deploying Computer's ship\n";
+    private String gameStartingMessage = "Start Firing\n";
+    private String humanPlayerTurnMessage = "It's your Turn\n";
+    private String virtualPlayerTurnMessage = "It's Computer's Turn\n";
+
+
     @Override
     public void printWelcomeMessage() {
         System.out.println( welcomeText );
@@ -35,27 +48,60 @@ public class ViewImp implements View {
     }
 
     @Override
-    public void printTurnMessage() {
-
+    public void printHumanPlayerTurnMessage() {
+        System.out.println(humanPlayerTurnMessage);
     }
 
     @Override
-    public void printHitMessage() {
-        System.out.println(hitMessage);
+    public void printVirtualPlayerTurnMessage() {
+        System.out.println(virtualPlayerTurnMessage);
     }
 
     @Override
-    public void printMissMessage() {
-        System.out.println(missMessage);
+    public void printHitMessage(int playerType, String playerName) {
+        if(playerType==1)
+        {
+            System.out.println(humanPlayerHitMessage);
+        }
+        else {
+            System.out.println(virtualPlayerHitMessage);
+        }
     }
 
     @Override
-    public void printSunkMessage() {
-        System.out.println(sunkMessage);
+    public void printMissMessage(int playerType, String playerName) {
+        if(playerType==1)
+        {
+            System.out.println(humanPlayerMissMessage);
+        }
+        else {
+            System.out.println(virtualPlayerMissMessage);
+        }
     }
 
     @Override
-    public void printPoint() {
+    public void printSunkMessage(int playerType, String playerName) {
+        if(playerType==1)
+        {
+            System.out.println(humanPlayerSunkMessage);
+        }
+        else {
+            System.out.println(virtualPlayerSunkMessage);
+        }
+    }
+
+    @Override
+    public void printPoint(int playerType, int point) {
+
+        if(playerType==1)
+        {
+            System.out.println("Your Point: "+point);
+        }
+        else {
+
+            System.out.println("Computer's Point: "+point);
+
+        }
 
     }
 
@@ -95,25 +141,6 @@ public class ViewImp implements View {
         }
         System.out.println();
 
-        // System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
-        // System.out.println();
-
-        // for(int row=0 ; row < 10 ; row++ ) {
-        //     System.out.print((row+1) + "");
-        //     for (int column = 0; column < 15; column++) {
-        //         if(board[row][column]!=-1)
-        //         {
-        //             System.out.print("\t"+"c"+shipInstance);
-        //         }
-        //         else{
-        //             System.out.print("\t"+"~");
-        //         }
-
-
-        //     }
-        //     System.out.println("\n");
-        // }
-        //     System.out.println();
     }
 
     @Override
@@ -145,6 +172,65 @@ public class ViewImp implements View {
     @Override
     public void invalidColWarning() {
         System.out.println(invalidColMessage);
+    }
+
+    @Override
+    public void printBoardInitializationMessage() {
+        System.out.println(initializingBoardMessage);
+    }
+
+    @Override
+    public void printHumanPlayerShipDeploymentMessage() {
+        System.out.println(humanPlayerShipDeployMessage);
+    }
+
+    @Override
+    public void printVirtualPlayerShipDeploymentMessage() {
+        System.out.println(virtualPlayerShipDeployMessage);
+    }
+
+    @Override
+    public void showBoard(int[][] board) {
+        System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
+        System.out.println();
+
+
+        for (int i = 0; i < 10; i++) {
+            System.out.print((i+1) + "");
+            for (int j = 0; j < 15; j++) {
+                if( board[i][j] == -1)
+                {
+                    System.out.print("\t~");
+                }
+                else if( board[i][j] == 0)
+                {
+                    System.out.print("\t#");
+                }
+                else if ( board[i][j] <= 2 ) {
+                    System.out.print( "\tc" + (board[i][j] - ShipInfo.carrierType ));
+                }
+                else if ( board[i][j] <= 5 ) {
+                    System.out.print( "\tb" + (board[i][j] - ShipInfo.battleShipType));
+                }
+                else if ( board[i][j] <= 10 ) {
+                    System.out.print( "\td" + (board[i][j] - ShipInfo.destroyerType));
+                }
+                else if ( board[i][j] <= 18 ) {
+                    System.out.print( "\ts" + (board[i][j] - ShipInfo.superPatrolType));
+                }
+                else {
+                    System.out.print( "\tp" + (board[i][j] - ShipInfo.patrolBoatType));
+                }
+
+            }
+            System.out.println("\n");
+        }
+        System.out.println();
+    }
+
+    @Override
+    public void printGameStartingMessage() {
+        System.out.println(gameStartingMessage);
     }
 
 

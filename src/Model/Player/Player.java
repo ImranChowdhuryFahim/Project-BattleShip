@@ -3,6 +3,7 @@ package Model.Player;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Model.Board.Board;
 import Model.Board.BoardImp;
 import Model.Ship.*;
 import View.View;
@@ -32,14 +33,19 @@ public abstract class Player {
         board.initializeBoard();
     }
 
-    public void getPlayerName()
+    public int getPoints()
     {
-        System.out.println(playerName);
+        return points;
     }
+
 
     public BoardImp getCurrentBoard()
     {
         return board;
+    }
+
+    public ArrayList<Ship> getListOfShips(){
+        return listOfShips;
     }
 
     public void loadShips()
@@ -119,8 +125,45 @@ public abstract class Player {
         }
     }
 
-    public void performPlayerTurn () {
-        // Child classes will implement this method
+    public void performPlayerTurn (Player enemyPlayer,int posX, int posY) {
+
+        View view = new ViewImp();
+        Board enemyBoard =new BoardImp();
+        ArrayList<Ship> enemyShipList = new ArrayList<Ship>();
+        enemyBoard = enemyPlayer.getCurrentBoard();
+        enemyShipList = enemyPlayer.getListOfShips();
+
+        if(enemyBoard.isHit(posX - 1, posY - 1)) {
+            view.printHitMessage(playerType,playerName);
+            int cellValue = enemyBoard.getCellValue(posX - 1, posY - 1);
+            int shipType = cellValueToType(cellValue);
+            int shipQuantity = shipTypeToQuantity(shipType);
+            int shipInstanceNumber = cellValue - shipType;
+            for (Ship ship: enemyShipList ) {
+                if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
+                    ship.hitShip();
+                    points++;
+                    if(ship.isSunk()) {
+                        view.printSunkMessage(playerType,playerName);
+                        points++;
+                    }
+
+                }
+            }
+
+        } else {
+            view.printMissMessage(playerType,playerName);
+        }
+    }
+
+    public String getPlayerName()
+    {
+        return playerName;
+    }
+
+    public int getPlayerType()
+    {
+        return playerType;
     }
 
     public boolean isAllSunk() {

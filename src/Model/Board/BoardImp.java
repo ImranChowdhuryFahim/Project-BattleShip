@@ -3,7 +3,7 @@
 public class BoardImp implements Board {
     static int boardRow = 10;
     static int boardColumn = 15;
-    public static int[][] board = new int[boardRow][boardColumn];
+    public int[][] board = new int[boardRow][boardColumn];
 
 
 
@@ -26,19 +26,19 @@ public class BoardImp implements Board {
 
         }
 
-        System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
-        System.out.println();
-
-        for(int row=0 ; row < 10 ; row++ ) {
-            System.out.print((row+1) + "");
-            for (int column = 0; column < 15; column++) {
-                System.out.print("\t"+"~");
-
-
-            }
-            System.out.println("\n");
-        }
-            System.out.println();
+//        System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
+//        System.out.println();
+//
+//        for(int row=0 ; row < 10 ; row++ ) {
+//            System.out.print((row+1) + "");
+//            for (int column = 0; column < 15; column++) {
+//                System.out.print("\t"+"~");
+//
+//
+//            }
+//            System.out.println("\n");
+//        }
+//            System.out.println();
 
     }
 
@@ -54,7 +54,7 @@ public class BoardImp implements Board {
 
     @Override
     public void fire(int posX, int posY) {
-        board[posX][posY] = 0;
+        board[posX-1][posY-1] = 0;
     }
     @Override
     public int getCellValue(int posX, int posY) {
