@@ -68,12 +68,19 @@ public class Game {
 
     public void executePlayerTurns() throws InterruptedException
     {
+        long gameStartingTime = System.currentTimeMillis();
         int turnFlag = 0;
         scanner = new Scanner(System.in);
         Random random = new Random();
         int posX,posY;
         while (!isAllShipSunk())
         {
+            int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
+
+            if( timeElapse >= 300 ){
+                System.out.println("TIME IS OVER");
+                break;
+            }
             posX=0;
             posY=0;
             if(turnFlag == 0) // human Player's Turn
@@ -88,7 +95,7 @@ public class Game {
                 ConsoleInput con = new ConsoleInput(
                         1
                         ,
-                        9,
+                        30,
                         TimeUnit.SECONDS
                 );
                 long startingTime = System.currentTimeMillis();
@@ -199,12 +206,16 @@ public class Game {
 
             view.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());
             view.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());
+
         }
 
         if(isAllShipSunk())
         {
             System.out.println("All ship sunk");
             System.out.println(winnerName);
+        }
+        else {
+            System.out.println("Game time over!");
         }
     }
 
