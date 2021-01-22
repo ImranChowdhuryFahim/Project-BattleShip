@@ -133,8 +133,15 @@ public class Game {
                     turnFlag = 0;
             }
 
+
             view.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());
             view.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());
+        }
+
+        if(isAllShipSunk())
+        {
+            System.out.println("All ship sunk");
+            System.out.println(winnerName);
         }
     }
 
