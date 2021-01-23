@@ -1,6 +1,8 @@
  package Model.Board;
 
-public class BoardImp implements Board {
+ import java.io.Serializable;
+
+ public class BoardImp implements Board , Serializable {
     static int boardRow = 10;
     static int boardColumn = 15;
     public int[][] board = new int[boardRow][boardColumn];
@@ -20,25 +22,11 @@ public class BoardImp implements Board {
             for(int j=0; j<boardColumn; j++)
             {
 
-                board[i][j]=-1;  // -1 deonotes empty cell
+                board[i][j]=-1;  // -1 denotes empty cell
 
             }
 
         }
-
-//        System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
-//        System.out.println();
-//
-//        for(int row=0 ; row < 10 ; row++ ) {
-//            System.out.print((row+1) + "");
-//            for (int column = 0; column < 15; column++) {
-//                System.out.print("\t"+"~");
-//
-//
-//            }
-//            System.out.println("\n");
-//        }
-//            System.out.println();
 
     }
 
@@ -49,15 +37,22 @@ public class BoardImp implements Board {
 
     @Override
     public boolean isHit(int posX, int posY) {
-        return board[posX][posY] != -1 && board[posX][posY] != 0;
+        return board[posX-1][posY-1] != -1 && board[posX-1][posY-1] != 0 && board[posX-1][posY-1] != -5;
     }
 
     @Override
     public void fire(int posX, int posY) {
-        board[posX-1][posY-1] = 0;
+
+        if(isHit(posX,posY))
+        {
+            board[posX-1][posY-1] = 0;  // 0 denotes hit
+        }
+        else {
+            board[posX-1][posY-1] = -5;  // 1 denotes miss
+        }
     }
     @Override
     public int getCellValue(int posX, int posY) {
-        return board[posX][posY];
+        return board[posX-1][posY-1];
     }
 }

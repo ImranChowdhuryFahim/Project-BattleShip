@@ -1,6 +1,5 @@
-package Controller.TakingInput;
+package Model.Input;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -1,15 +1,15 @@
 package Model.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import Model.Board.Board;
 import Model.Board.BoardImp;
 import Model.Ship.*;
-import View.View;
-import View.ViewImp;
+import View.GameView;
+import View.GameViewImp;
 
-public abstract class Player {
+public abstract class Player implements Serializable {
 
     protected int playerType;
     protected BoardImp board;
@@ -111,33 +111,19 @@ public abstract class Player {
         }
     }
 
-    public int shipTypeToQuantity(int type) {
-        if (type == 0) {
-            return ShipInfo.carrierQuantity;
-        }  else if (type == 2) {
-            return ShipInfo.battleShipQuantity;
-        }  else if (type == 5) {
-            return ShipInfo.destroyerQuantity;
-        }  else if (type == 10) {
-            return ShipInfo.superPatrolQuantity;
-        }  else {
-            return ShipInfo.patrolBoatQuantity;
-        }
-    }
 
     public void performPlayerTurn (Player enemyPlayer,int posX, int posY) {
 
-        View view = new ViewImp();
-        Board enemyBoard =new BoardImp();
-        ArrayList<Ship> enemyShipList = new ArrayList<Ship>();
+        GameView gameView = new GameViewImp();
+        Board enemyBoard ;
+        ArrayList<Ship> enemyShipList ;
         enemyBoard = enemyPlayer.getCurrentBoard();
         enemyShipList = enemyPlayer.getListOfShips();
 
-        if(enemyBoard.isHit(posX - 1, posY - 1)) {
-            view.printHitMessage(playerType,playerName);
-            int cellValue = enemyBoard.getCellValue(posX - 1, posY - 1);
+        if(enemyBoard.isHit(posX, posY)) {
+            gameView.printHitMessage(playerType,playerName);
+            int cellValue = enemyBoard.getCellValue(posX, posY);
             int shipType = cellValueToType(cellValue);
-            int shipQuantity = shipTypeToQuantity(shipType);
             int shipInstanceNumber = cellValue - shipType;
 
             for (Ship ship: enemyShipList ) {
@@ -145,7 +131,7 @@ public abstract class Player {
                     ship.hitShip();
                     points++;
                     if(ship.isSunk()) {
-                        view.printSunkMessage(playerType,playerName);
+                        gameView.printSunkMessage(playerType,playerName);
                         points++;
                     }
 
@@ -157,13 +143,16 @@ public abstract class Player {
 
         } else {
 
-            if(enemyBoard.getCellValue(posX - 1, posY - 1) == 0)
+
+            if(enemyBoard.getCellValue(posX, posY) == 0 || enemyBoard.getCellValue(posX, posY) == -5)
             {
-                view.printAlreadyHitMessage();
+                gameView.printAlreadyFiredMessage(playerType,playerName);
             }
             else{
-                view.printMissMessage(playerType,playerName);
+                gameView.printMissMessage(playerType,playerName);
             }
+
+            enemyBoard.fire(posX,posY);
 
         }
     }

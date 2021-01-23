@@ -1,66 +1,69 @@
 package Controller;
 
-import Controller.TakingInput.ConsoleInput;
-import Model.Board.Board;
-import Model.Board.BoardImp;
+import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
-import Model.Player.Player;
 import Model.Player.VirtualPlayer;
 import Model.Ship.Ship;
-import View.View;
-import View.ViewImp;
+import View.GameView;
+import View.GameViewImp;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Game {
+
+public class GameController {
     private String  playerName;
     private String winnerName ;
     private Scanner scanner ;
-    private View view ;
-    private Board playBoard ;
+    private GameView gameView;
     private HumanPlayer humanPlayer;
     private VirtualPlayer virtualPlayer;
-    public Game(String playerName)
+    private static int lastHitPosX = -1;
+    private static int lastHitPosY = -1;
+    private boolean isGameOver;
+    private Timer timer ;
+    private long gameStartingTime;
+
+    public GameController(String playerName)
     {
         this.playerName = playerName;
-        this.view = new ViewImp();
-        this.playBoard = new BoardImp();
+        this.gameView = new GameViewImp();
         this.humanPlayer = new HumanPlayer(playerName);
         this.virtualPlayer = new VirtualPlayer();
+
     }
 
     public void initializeGame()
     {
 
 
-        view.printBoardInitializationMessage();
+        gameView.printBoardInitializationMessage();
         humanPlayer.initializeGameBoard();
         virtualPlayer.initializeGameBoard();
         humanPlayer.loadShips();
         virtualPlayer.loadShips();
-        view.printBoard(humanPlayer.getCurrentBoard());
+        gameView.showOwnBoard(humanPlayer.getCurrentBoard());
         delay(2);
 
 
-        view.printHumanPlayerShipDeploymentMessage();
+        gameView.printHumanPlayerShipDeploymentMessage();
         delay(2);
         humanPlayer.deployShips();
-        view.printBoard(humanPlayer.getCurrentBoard());
+        gameView.showOwnBoard(humanPlayer.getCurrentBoard());
 
         delay(2);
-        view.printVirtualPlayerShipDeploymentMessage();
+        gameView.printVirtualPlayerShipDeploymentMessage();
         virtualPlayer.deployShips();
-        view.printBoard(virtualPlayer.getCurrentBoard());
+        gameView.showOwnBoard(virtualPlayer.getCurrentBoard());
 
-        playBoard.initializeBoard();
+        gameView.printGameStartingMessage();
+        gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
 
-        view.printGameStartingMessage();
-        view.showBoard(playBoard.getBoard());
-
-
+        gameStartingTime = System.currentTimeMillis();
 
 
 
@@ -78,7 +81,8 @@ public class Game {
             int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
 
             if( timeElapse >= 300 ){
-                System.out.println("TIME IS OVER");
+                gameView.showTimeOverMessage();
+                gameView.showWinnerName(winnerName);
                 break;
             }
             posX=0;
@@ -86,8 +90,10 @@ public class Game {
             if(turnFlag == 0) // human Player's Turn
             {
 
-                  view.printHumanPlayerTurnMessage();
-                  view.propmtInputMessageForRow();
+                  gameView.printHumanPlayerTurnMessage();
+                  gameView.propmtInputMessageForRow();
+
+                  int posx = 0,posy = 0;
 
 
 //                  posX = scanner.nextInt();
@@ -110,7 +116,7 @@ public class Game {
 
                   while ((posX > 10 || posX < 1) && posX != 0) {
 
-                        view.invalidRowWarning();
+                        gameView.invalidRowWarning();
                       inputLine = con.readLine();
                       if(inputLine != null) {
                           posX = Integer.parseInt(inputLine);
@@ -126,7 +132,7 @@ public class Game {
                               TimeUnit.SECONDS
                       );
 
-                      view.propmtInputMessageForColumn();
+                      gameView.propmtInputMessageForColumn();
                       inputLine = con1.readLine();
                       if(inputLine != null) {
                           posY = Integer.parseInt(inputLine);
@@ -134,19 +140,16 @@ public class Game {
 
                       while ((posY > 15 || posY < 1) && posY != 0 ) {
 
-                          view.invalidColWarning();
+                          gameView.invalidColWarning();
                           inputLine = con1.readLine();
                           if(inputLine != null) {
                               posY = Integer.parseInt(inputLine);
                           }
                       }
                       if(posX > 0 && posY > 0) {
-                          playBoard.fire(posX, posY);
 
 
-                          view.showBoard(playBoard.getBoard());
-
-                          if (virtualPlayer.getCurrentBoard().isHit(posX - 1, posY - 1)) {
+                          if (virtualPlayer.getCurrentBoard().isHit(posX , posY )) {
                               turnFlag = 0;
 
                           } else {
@@ -155,6 +158,9 @@ public class Game {
                           }
 
                           humanPlayer.performPlayerTurn(virtualPlayer, posX, posY);
+                          gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
+
+
                       } else {
                           turnFlag = 1;
                       }
@@ -174,9 +180,12 @@ public class Game {
 
             }
 
-            else {    // Virtual Player's Turn
-                    view.printVirtualPlayerTurnMessage();
+            else {
+                // Virtual Player's Turn
+                    gameView.printVirtualPlayerTurnMessage();
 
+                if(!wasHit())
+                {
                     posX = random.nextInt(10);
                     while (posX < 1) {
                         posX = random.nextInt(10);
@@ -186,12 +195,41 @@ public class Game {
                     while (posY < 1) {
                         posY = random.nextInt(15);
                     }
+                }
+                else {
 
-                if(humanPlayer.getCurrentBoard().isHit(posX-1,posY-1))
+                    if(isRightMovePossible())
+                    {
+                        // Right move
+                        posX=lastHitPosX;
+                        posY=lastHitPosY+1;
+                    }
+                    else {
+                        if(isUpMovePossible())
+                        {
+                            // Up move
+                            posX=lastHitPosX+1;
+                            posY=lastHitPosY;
+                        }
+                        else {
+                                // Down move
+                                posX=lastHitPosX-1;
+                                posY=lastHitPosY;
+
+                        }
+
+                    }
+                }
+
+                if(humanPlayer.getCurrentBoard().isHit(posX,posY))
                 {
+                    lastHitPosX = posX;
+                    lastHitPosY = posY;
                     turnFlag = 1;
                 }
                 else{
+                    lastHitPosX = -1;
+                    lastHitPosY = -1;
                     turnFlag = 0;
                 }
 
@@ -204,19 +242,19 @@ public class Game {
             }
 
 
-            view.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());
-            view.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());
+            gameView.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());
+            gameView.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());
 
         }
+
 
         if(isAllShipSunk())
         {
-            System.out.println("All ship sunk");
-            System.out.println(winnerName);
+
+            gameView.showAllShipSunkMessage();
+            gameView.showWinnerName(winnerName);
         }
-        else {
-            System.out.println("Game time over!");
-        }
+
     }
 
     public void delay(int time)  {
@@ -245,7 +283,7 @@ public class Game {
 
         if(sunk_count == 28)
         {
-            winnerName = humanPlayer.getPlayerName();
+            winnerName = virtualPlayer.getPlayerName();
             allSunk = true;
             return allSunk;
         }
@@ -261,13 +299,28 @@ public class Game {
 
         if(sunk_count == 28)
         {
-            winnerName = virtualPlayer.getPlayerName();
+            winnerName = humanPlayer.getPlayerName();
             allSunk = true;
             return allSunk;
         }
 
         return allSunk;
 
+    }
+
+    public boolean wasHit()
+    {
+        return lastHitPosX != -1 && lastHitPosY != -1;
+    }
+
+    public boolean isRightMovePossible()
+    {
+        return lastHitPosY <14;
+    }
+
+    public boolean isUpMovePossible()
+    {
+        return lastHitPosX < 10;
     }
 
 }

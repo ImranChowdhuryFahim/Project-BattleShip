@@ -1,4 +1,4 @@
-package Controller.TakingInput;
+package Model.Input;
 
 import java.util.concurrent.*;
 

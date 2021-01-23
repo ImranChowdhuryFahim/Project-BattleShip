@@ -1,21 +1,21 @@
 package Controller;
 
-import View.View;
-import  View.ViewImp;
+import View.GameView;
+import View.GameViewImp;
 
 import java.util.Scanner;
 
 public class GameStarter {
     public void starter () {
-        View view = new ViewImp();
-        view.printWelcomeMessage();
-        view.printInstructionsMessage();
+        GameView gameView = new GameViewImp();
+        gameView.printWelcomeMessage();
+        gameView.printInstructionsMessage();
         Scanner scanner = new Scanner(System.in);
 
         int option = scanner.nextInt();
 
         while (!(option == 1) && !(option == 2)) {
-            view.printWarning();
+            gameView.printWarning();
             option = scanner.nextInt();
         }
 

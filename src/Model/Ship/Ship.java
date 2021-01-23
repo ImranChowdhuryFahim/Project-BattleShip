@@ -1,8 +1,9 @@
 package Model.Ship;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public abstract class Ship{
+public abstract class Ship implements Serializable {
 
     protected int shipSize;
     protected int shipType;

@@ -2,7 +2,7 @@ package View;
 
 import Model.Board.BoardImp;
 
-public interface View {
+public interface GameView {
 
     public void printWelcomeMessage();
 
@@ -12,7 +12,15 @@ public interface View {
 
     public void printWinMessage();
 
-    public void printAlreadyHitMessage();
+    public void showGameOverMessage();
+
+    public void showTimeOverMessage();
+
+    public void showWinnerName(String winner);
+
+    public void showAllShipSunkMessage();
+
+    public void printAlreadyFiredMessage(int playerType,String playerName);
 
     public void printHumanPlayerTurnMessage();
     public void printVirtualPlayerTurnMessage();
@@ -22,7 +30,7 @@ public interface View {
     public  void printSunkMessage(int playerType, String playerName);
     public void printPoint(int playerType, int point);
 
-    public void printBoard(BoardImp board);
+    public void showOwnBoard(BoardImp board);
 
     public void printInstructionsMessage();
 
@@ -35,6 +43,6 @@ public interface View {
     public void printBoardInitializationMessage();
     public void printHumanPlayerShipDeploymentMessage();
     public void printVirtualPlayerShipDeploymentMessage();
-    public void showBoard(int[][] board);
+    public void showEnemyBoard(BoardImp board);
     public void printGameStartingMessage();
 }

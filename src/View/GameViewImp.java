@@ -1,10 +1,9 @@
 package View;
 
 import Model.Board.BoardImp;
-import Model.Player.VirtualPlayer;
 import Model.Ship.ShipInfo;
 
-public class ViewImp implements View {
+public class GameViewImp implements GameView {
     private  String welcomeText = "Welcome to Battle Ship Game ...";
     private  String menuText = "1. Play with virtual opponent\n 2. Play with human opponent\n Choose option: ";
     private  String warningMessage = "Please choose a valid option";
@@ -25,7 +24,12 @@ public class ViewImp implements View {
     private String gameStartingMessage = "Start Firing\n";
     private String humanPlayerTurnMessage = "It's your Turn\n";
     private String virtualPlayerTurnMessage = "It's Computer's Turn\n";
-    private String alreadyHit = "You have already hit";
+    private String humanAlreadyFired = "You have already fired";
+    private String computerAlreadyFired = "Computer has already fired";
+    private String timeOverMessage = "Time Over";
+    private String gameOverMessage = "Game Over";
+    private String winMessage = " is the winner";
+    private String allShipSunkMessage = "All ship sunk";
 
 
     @Override
@@ -49,8 +53,37 @@ public class ViewImp implements View {
     }
 
     @Override
-    public void printAlreadyHitMessage() {
-        System.out.println(alreadyHit);
+    public void showGameOverMessage() {
+        System.out.println(gameOverMessage);
+    }
+
+    @Override
+    public void showTimeOverMessage() {
+        System.out.println(timeOverMessage);
+    }
+
+    @Override
+    public void showWinnerName(String winner) {
+        System.out.println(winner+winMessage);
+    }
+
+    @Override
+    public void showAllShipSunkMessage() {
+        System.out.println(allShipSunkMessage);
+    }
+
+
+    @Override
+    public void printAlreadyFiredMessage(int playerType,String playerName) {
+
+        if(playerType == 1)
+        {
+            System.out.println(humanAlreadyFired);
+        }
+        else{
+            System.out.println(computerAlreadyFired);
+        }
+
     }
 
     @Override
@@ -112,7 +145,7 @@ public class ViewImp implements View {
     }
 
     @Override
-    public void printBoard(BoardImp board1) {
+    public void showOwnBoard(BoardImp board1) {
 
         int[][] board= board1.getBoard();
         System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
@@ -196,7 +229,9 @@ public class ViewImp implements View {
     }
 
     @Override
-    public void showBoard(int[][] board) {
+    public void showEnemyBoard(BoardImp board1) {
+        int[][] board= board1.getBoard();
+
         System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
         System.out.println();
 
@@ -204,28 +239,17 @@ public class ViewImp implements View {
         for (int i = 0; i < 10; i++) {
             System.out.print((i+1) + "");
             for (int j = 0; j < 15; j++) {
-                if( board[i][j] == -1)
+                if( board[i][j] == -5)
                 {
-                    System.out.print("\t~");
+                    System.out.print("\tx");
                 }
                 else if( board[i][j] == 0)
                 {
                     System.out.print("\t#");
                 }
-                else if ( board[i][j] <= 2 ) {
-                    System.out.print( "\tc" + (board[i][j] - ShipInfo.carrierType ));
-                }
-                else if ( board[i][j] <= 5 ) {
-                    System.out.print( "\tb" + (board[i][j] - ShipInfo.battleShipType));
-                }
-                else if ( board[i][j] <= 10 ) {
-                    System.out.print( "\td" + (board[i][j] - ShipInfo.destroyerType));
-                }
-                else if ( board[i][j] <= 18 ) {
-                    System.out.print( "\ts" + (board[i][j] - ShipInfo.superPatrolType));
-                }
-                else {
-                    System.out.print( "\tp" + (board[i][j] - ShipInfo.patrolBoatType));
+                else
+                {
+                    System.out.print("\t~");
                 }
 
             }
