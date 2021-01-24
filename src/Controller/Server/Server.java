@@ -55,10 +55,10 @@ public class Server {
 
     public void initializeServer() throws IOException {
         server = new ServerSocket(3000);
-        System.out.println("Hi "+name+"!\n"+ "Server has started successfully");
-        System.out.println("Waiting for another player to join");
+        gameView.showServerStartedMessage(name);
+        gameView.showServerWaitingMessage();
         new_connection =  server.accept();
-        System.out.println("Player has joined ");
+        gameView.showPlayerJoinedMessage();
         dataInputStreamFromClient = new DataInputStream(new_connection.getInputStream());
         dataOutputStreamToClient = new DataOutputStream(new_connection.getOutputStream());
         objectOutputStreamToClient = new ObjectOutputStream(new_connection.getOutputStream());
@@ -133,9 +133,7 @@ public class Server {
 
     }
 
-    private void recieveWinnerNameFromCleint() throws IOException {
-//        winnerName = dataInputStreamFromClient.readUTF();
-    }
+
 
 
     private void InitializeGame() throws IOException, ClassNotFoundException {
@@ -182,15 +180,15 @@ public class Server {
 
             if(x==0 || y==0)
             {
-                System.out.println("Opponent didn't respond");
+
                 turnFlag =0;
             }
             else if(hit)
             {
-                System.out.println("Oops! opponent has hit your ship");
+                gameView.showOpponentsHitMessage();
                 if(sunk)
                 {
-                    System.out.println("Oops! opponent has sunk your ship");
+                    gameView.showHumanOpponentPlayerSunkMessage();
                 }
                 enemyPoint=point;
                 System.out.println(serverPlayer.getPlayerName()+"'s point: "+serverPlayer.getPoints());
@@ -201,9 +199,9 @@ public class Server {
             else
             {
 
-                System.out.println("Opponent has missed");
-                System.out.println(serverPlayer.getPlayerName()+"'s point: "+serverPlayer.getPoints());
-                System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+                gameView.showOpponentsMissMessage();
+                gameView.showPointsWithName(serverPlayer.getPlayerName(),serverPlayer.getPoints());
+                gameView.showPointsWithName(enemy.getPlayerName(),enemyPoint);
 
 
                 turnFlag =0;

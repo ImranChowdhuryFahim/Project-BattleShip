@@ -52,7 +52,7 @@ public abstract class Player implements Serializable {
     {
         int[] shipQuantity= {2,3,5,8,10};
 
-        for(int i=0; i<1; i++)
+        for(int i=0; i<5; i++)
         {
             
             for(int j=1; j <= shipQuantity[i]; j++ )

@@ -29,6 +29,16 @@
         }
 
     }
+     @Override
+    public int getBoardRow()
+    {
+        return boardRow;
+    }
+     @Override
+    public int getBoardColumn()
+    {
+        return boardColumn;
+    }
 
     @Override
     public int[][] getBoard() {

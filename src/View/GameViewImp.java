@@ -12,8 +12,10 @@ public class GameViewImp implements GameView {
     private  String invalidRowMessage = "Given row is out of the board. Please input a valid one: ";
     private  String invalidColMessage = "Given column is out of the board. Please input a valid one: ";
     private String humanPlayerHitMessage = "Congrats! You have hit opponent's ship";
+    private String humanOpponentPlayerHitMessage = "Ooops! Opponent has hit your ship";
     private String virtualPlayerHitMessage = "Computer has hit your ship";
     private  String humanPlayerMissMessage = "Oops!, you have missed";
+    private String humanOpponentMissMessage = "Opponent has missed";
     private String virtualPlayerMissMessage = "Computer has missed";
     private  String humanPlayerSunkMessage = "Ya hoo!, you have sunk one opponent's ship";
     private String virtualPlayerSunkMessage = "Computer has sunk your ship";
@@ -30,6 +32,9 @@ public class GameViewImp implements GameView {
     private String gameOverMessage = "Game Over";
     private String winMessage = " is the winner";
     private String allShipSunkMessage = "All ship sunk";
+    private String serverWaitingMessage = "Waiting for another player to join";
+    private String playerJoinedMessage = "Player has joined";
+    private String humanOpponentSunkMessage = "Oops! Opponent has sunk your ship";
 
 
     @Override
@@ -261,6 +266,51 @@ public class GameViewImp implements GameView {
     @Override
     public void printGameStartingMessage() {
         System.out.println(gameStartingMessage);
+    }
+
+    @Override
+    public void showServerStartedMessage(String name) {
+        System.out.println("Hi "+name+"!\n"+ "Server has started successfully");
+    }
+
+    @Override
+    public void showJoinedToServerMessage(String name) {
+        System.out.println();
+    }
+
+    @Override
+    public void showServerWaitingMessage() {
+         System.out.println(serverWaitingMessage);
+    }
+
+    @Override
+    public void showPlayerJoinedMessage() {
+          System.out.println(playerJoinedMessage);
+    }
+
+    @Override
+    public void showOpponentsHitMessage() {
+        System.out.println(humanOpponentPlayerHitMessage);
+    }
+
+    @Override
+    public void showOpponentsMissMessage() {
+System.out.println(humanOpponentMissMessage);
+    }
+
+    @Override
+    public void showOpponentsAlreadyHitMessage() {
+
+    }
+
+    @Override
+    public void showPointsWithName(String name,int point) {
+        System.out.println(name+"'s point: "+point);
+    }
+
+    @Override
+    public void showHumanOpponentPlayerSunkMessage() {
+        System.out.println(humanOpponentSunkMessage);
     }
 
 

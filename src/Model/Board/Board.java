@@ -12,4 +12,8 @@ public interface Board {
     public void fire(int posX, int posY);
 
     public int getCellValue(int posX, int posY);
+
+    public int getBoardRow();
+
+    public int getBoardColumn();
 }

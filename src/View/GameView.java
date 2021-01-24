@@ -45,4 +45,16 @@ public interface GameView {
     public void printVirtualPlayerShipDeploymentMessage();
     public void showEnemyBoard(BoardImp board);
     public void printGameStartingMessage();
+
+    public void showServerStartedMessage(String name);
+    public void showJoinedToServerMessage(String name);
+    public void showServerWaitingMessage();
+    public void showPlayerJoinedMessage();
+
+    public void showOpponentsHitMessage();
+    public void showOpponentsMissMessage();
+    public void showOpponentsAlreadyHitMessage();
+    public void showPointsWithName(String name,int point);
+    public void showHumanOpponentPlayerSunkMessage();
+
 }
