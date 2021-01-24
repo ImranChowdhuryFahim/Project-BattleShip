@@ -1,8 +1,12 @@
 package Controller.Server;
 
+import Model.Board.Board;
+import Model.Board.BoardImp;
 import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
+import Model.Player.Player;
 import Model.Ship.Ship;
+import Model.Ship.ShipInfo;
 import View.GameView;
 import View.GameViewImp;
 
@@ -21,7 +25,8 @@ public class Server {
     ObjectInputStream objectInputStreamFromClient;
     ObjectOutputStream objectOutputStreamToClient;
     String winnerName;
-    int posX=0,posY=0;
+    int posX=0,posY=0,enemyPoint=0;
+    int turnFlag=0;
 
 
     Scanner scanner =new Scanner(System.in);
@@ -35,6 +40,11 @@ public class Server {
         serverPlayer = new HumanPlayer(name);
         gameView = new GameViewImp();
     }
+
+
+
+
+
 
     public void initializeServer() throws IOException {
         server = new ServerSocket(3000);
@@ -51,7 +61,54 @@ public class Server {
 
 
 
+
+
     public void gamePlay() throws IOException, ClassNotFoundException, InterruptedException {
+
+
+        InitializeGame();
+
+        long gameStartingTime = System.currentTimeMillis();
+
+        while (!isAllShipSunk())
+        {
+            int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
+
+            if( timeElapse >= 300 ){
+                gameView.showTimeOverMessage();
+                break;
+            }
+            posX=0;
+            posY=0;
+            if(turnFlag ==0)
+            {
+                serversTurn();
+            }
+            else{
+
+                clientsTurn();
+
+            }
+
+
+        }
+
+        if(isAllShipSunk())
+        {
+            gameView.showAllShipSunkMessage();
+            gameView.showGameOverMessage();
+        }
+
+        recieveWinnerNameFromCleint();
+        gameView.showWinnerName(winnerName);
+    }
+
+    private void recieveWinnerNameFromCleint() throws IOException {
+        winnerName = dataInputStreamFromClient.readUTF();
+    }
+
+
+    private void InitializeGame() throws IOException, ClassNotFoundException {
         gameView.printBoardInitializationMessage();
         serverPlayer.initializeGameBoard();
         serverPlayer.loadShips();
@@ -72,115 +129,161 @@ public class Server {
 
         gameView.printGameStartingMessage();
         gameView.showEnemyBoard(enemy.getCurrentBoard());
-
-        int turnFlag=0;
-
-//        while (!isAllShipSunk())
-//        {
-//            if(turnFlag == 0)   // Server turn
-//            {
-//                gameView.printHumanPlayerTurnMessage();
-//                gameView.propmtInputMessageForRow();
-//
-//
-//                ConsoleInput con = new ConsoleInput(
-//                        1
-//                        ,
-//                        30,
-//                        TimeUnit.SECONDS
-//                );
-//                long startingTime = System.currentTimeMillis();
-//
-//                String inputLine = con.readLine();
-//
-//                if(inputLine != null) {
-//                    posX = Integer.parseInt(inputLine);
-//                }
-//
-////                System.out.println("Done. Your input was: " + posX);
-//
-//                while ((posX > 10 || posX < 1) && posX != 0) {
-//
-//                    gameView.invalidRowWarning();
-//                    inputLine = con.readLine();
-//                    if(inputLine != null) {
-//                        posX = Integer.parseInt(inputLine);
-//                    }
-//                }
-//
-//                if(posX != 0) {
-//                    int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
-//                    ConsoleInput con1 = new ConsoleInput(
-//                            1
-//                            ,restTime
-//                            ,
-//                            TimeUnit.SECONDS
-//                    );
-//
-//                    gameView.propmtInputMessageForColumn();
-//                    inputLine = con1.readLine();
-//                    if(inputLine != null) {
-//                        posY = Integer.parseInt(inputLine);
-//                    }
-//
-//                    while ((posY > 15 || posY < 1) && posY != 0 ) {
-//
-//                        gameView.invalidColWarning();
-//                        inputLine = con1.readLine();
-//                        if(inputLine != null) {
-//                            posY = Integer.parseInt(inputLine);
-//                        }
-//                    }
-//
-//
-//                    if(posX > 0 && posY > 0) {
-//
-//
-//
-//                        if (enemy.getCurrentBoard().isHit(posX , posY )) {
-//                            turnFlag = 0;
-//
-//                        } else {
-//
-//                            turnFlag = 1;
-//                        }
-//
-//                        serverPlayer.performPlayerTurn(enemy, posX, posY);
-//                        gameView.showEnemyBoard(enemy.getCurrentBoard());
-//
-//
-//                    } else {
-//                        turnFlag = 1;
-//                    }
-//                    dataOutputStreamToClient.writeUTF("turn");
-//                }
-//                else {
-//                    String turn = dataInputStreamFromClient.readUTF();
-//                    System.out.println("Opponent's Turn");
-//                }
-//            }
-//            else { // client turn
-//
-//            }
-//        }
-//
-//        while (!isAllShipSunk())
-//        {
-//            if(turnFlag ==0)
-//            {
-//                System.out.println("Input dicci");
-//                dataOutputStreamToClient.writeInt(scanner.nextInt());
-//                dataOutputStreamToClient.writeInt(scanner.nextInt());
-//                turnFlag = 1;
-//            }
-//            else{
-//                System.out.println("input nicci");
-//                System.out.println(dataInputStreamFromClient.readInt());
-//                System.out.println(dataInputStreamFromClient.readInt());
-//                turnFlag = 0;
-//            }
-//        }
     }
+
+
+
+
+
+
+
+    private void clientsTurn() throws IOException {
+        System.out.println(enemy.getPlayerName()+"'s turn");
+        int x,y,cell,point;
+        boolean sunk,hit;
+        x=dataInputStreamFromClient.readInt();
+        y=dataInputStreamFromClient.readInt();
+        cell=dataInputStreamFromClient.readInt();
+        sunk = dataInputStreamFromClient.readBoolean();
+        hit = dataInputStreamFromClient.readBoolean();
+        point = dataInputStreamFromClient.readInt();
+        //no input so its my turn
+
+        if(x==0 || y==0)
+        {
+            System.out.println("Opponent didn't respond");
+            turnFlag =0;
+        }
+        else if(hit)
+        {
+            System.out.println("Oops! opponent has hit your ship");
+            if(sunk)
+            {
+                System.out.println("Oops! opponent has sunk your ship");
+            }
+            enemyPoint=point;
+            System.out.println(serverPlayer.getPlayerName()+"'s point: "+serverPlayer.getPoints());
+            System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+
+            turnFlag =1;
+        }
+        else
+        {
+
+            System.out.println("Opponent has missed");
+            System.out.println(serverPlayer.getPlayerName()+"'s point: "+serverPlayer.getPoints());
+            System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+
+
+            turnFlag =0;
+        }
+    }
+
+
+
+
+
+
+    private void serversTurn() throws IOException, InterruptedException {
+
+        int cellValue=-50,point=0;
+        boolean sunk=false;
+        boolean hit= false;
+
+        System.out.println("It's your turn");
+        gameView.propmtInputMessageForRow();
+
+        ConsoleInput con = new ConsoleInput(
+                1
+                ,
+                30,
+                TimeUnit.SECONDS
+        );
+        long startingTime = System.currentTimeMillis();
+
+        String inputLine = con.readLine();
+
+        if(inputLine != null) {
+            posX = Integer.parseInt(inputLine);
+        }
+
+
+
+        while ((posX > 10 || posX < 1) && posX != 0) {
+
+            gameView.invalidRowWarning();
+            inputLine = con.readLine();
+            if(inputLine != null) {
+                posX = Integer.parseInt(inputLine);
+            }
+        }
+
+        if(posX != 0) {
+            int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
+            ConsoleInput con1 = new ConsoleInput(
+                    1
+                    ,restTime
+                    ,
+                    TimeUnit.SECONDS
+            );
+
+            gameView.propmtInputMessageForColumn();
+            inputLine = con1.readLine();
+            if(inputLine != null) {
+                posY = Integer.parseInt(inputLine);
+            }
+
+            while ((posY > 15 || posY < 1) && posY != 0 ) {
+
+                gameView.invalidColWarning();
+                inputLine = con1.readLine();
+                if(inputLine != null) {
+                    posY = Integer.parseInt(inputLine);
+                }
+            }
+            if(posX > 0 && posY > 0) {
+
+
+
+                if(enemy.getCurrentBoard().isHit(posX,posY))
+                {
+                    hit=true;
+                    turnFlag =0;
+                }
+                else {
+
+                    turnFlag = 1;
+                }
+                sunk = performPlayerTurn(enemy,posX,posY);
+                cellValue = enemy.getCurrentBoard().getCellValue(posX,posY);
+                point = serverPlayer.getPoints();
+
+            } else {
+
+                turnFlag = 1;
+            }
+        }
+        else {
+
+            turnFlag = 1;
+        }
+        System.out.println(serverPlayer.getPlayerName()+"'s point: "+serverPlayer.getPoints());
+        System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+        if(posX>0 && posY>0)
+        {
+            gameView.showEnemyBoard(enemy.getCurrentBoard());
+        }
+        dataOutputStreamToClient.writeInt(posX);
+        dataOutputStreamToClient.writeInt(posY);
+        dataOutputStreamToClient.writeInt(cellValue);
+        dataOutputStreamToClient.writeBoolean(sunk);
+        dataOutputStreamToClient.writeBoolean(hit);
+        dataOutputStreamToClient.writeInt(point);
+    }
+
+
+
+
 
     public void delay(int time)  {
 
@@ -190,6 +293,88 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+
+
+
+
+
+    public int cellValueToType (int cellValue) {
+        if (  cellValue <= 2 ) {
+            return ShipInfo.carrierType;
+        } else if(cellValue <= 5 ) {
+            return ShipInfo.battleShipType;
+        } else if (cellValue <= 10) {
+            return ShipInfo.destroyerType;
+        } else if (cellValue <= 18) {
+            return ShipInfo.superPatrolType;
+        } else {
+            return ShipInfo.patrolBoatType;
+        }
+    }
+
+
+
+
+
+
+
+    public boolean performPlayerTurn(Player enemyPlayer,int posX,int posY)
+    {
+        boolean sunk =false;
+        GameView gameView = new GameViewImp();
+        Board enemyBoard ;
+        ArrayList<Ship> enemyShipList ;
+        enemyBoard = enemyPlayer.getCurrentBoard();
+        enemyShipList = enemyPlayer.getListOfShips();
+
+        if(enemyBoard.isHit(posX, posY)) {
+            System.out.println("Congrats! you have hit opponent's ship");
+            int cellValue = enemyBoard.getCellValue(posX, posY);
+            int shipType = cellValueToType(cellValue);
+            int shipInstanceNumber = cellValue - shipType;
+
+            for (Ship ship: enemyShipList ) {
+                if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
+                    ship.hitShip();
+                    serverPlayer.increasePoint();
+                    if(ship.isSunk()) {
+                        System.out.println("Congrats! you have sunk opponent's ship");
+                        serverPlayer.increasePoint();
+                        sunk=true;
+                    }
+
+                }
+            }
+
+            enemyBoard.fire(posX,posY);
+
+
+        } else {
+
+
+            if(enemyBoard.getCellValue(posX, posY) == 0 || enemyBoard.getCellValue(posX, posY) == -5)
+            {
+                System.out.println("You have already fired");
+            }
+            else{
+                System.out.println("You have missed");
+            }
+
+            enemyBoard.fire(posX,posY);
+
+        }
+
+        return sunk;
+
+    }
+
+
+
+
+
+
+
 
     public boolean isAllShipSunk()
     {
@@ -232,6 +417,13 @@ public class Server {
         return allSunk;
 
     }
+
+
+
+
+
+
+
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
         Server s = new Server("Imran");

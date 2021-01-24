@@ -157,6 +157,11 @@ public abstract class Player implements Serializable {
         }
     }
 
+    public void increasePoint()
+    {
+        points++;
+    }
+
     public String getPlayerName()
     {
         return playerName;

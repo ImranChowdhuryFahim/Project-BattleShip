@@ -43,13 +43,17 @@
     @Override
     public void fire(int posX, int posY) {
 
-        if(isHit(posX,posY))
+        if(board[posX-1][posY-1]!=0 && board[posX-1][posY-1]!=-5)
         {
-            board[posX-1][posY-1] = 0;  // 0 denotes hit
+            if(isHit(posX,posY))
+            {
+                board[posX-1][posY-1] = 0;  // 0 denotes hit
+            }
+            else {
+                board[posX-1][posY-1] = -5;  // 1 denotes miss
+            }
         }
-        else {
-            board[posX-1][posY-1] = -5;  // 1 denotes miss
-        }
+
     }
     @Override
     public int getCellValue(int posX, int posY) {
