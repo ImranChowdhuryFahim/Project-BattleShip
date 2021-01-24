@@ -1,5 +1,6 @@
 package Controller.Client;
 
+import Controller.Server.Server;
 import Model.Board.Board;
 import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
@@ -29,6 +30,10 @@ public class Client {
     GameView gameView;
     int posX=0,posY=0,enemyPoint=0;
     int turnFlag=0;
+
+    int cellValue=-50,point=0;
+    boolean sunk=false;
+    boolean hit= false;
 
     String winnerName;
 
@@ -69,48 +74,70 @@ public class Client {
             int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
 
             if( timeElapse >= 300 ){
+                if(enemyPoint > playerClient.getPoints()) {
+                    System.out.println(enemy.getPlayerName() + " wins");
+                }
+                else if (enemyPoint == playerClient.getPoints()) {
+                    delay(2);
+                    System.out.println(getWinnerName() + " wins");
+                }
+                else {
+                    System.out.println("You won");
+                }
                 gameView.showTimeOverMessage();
                 break;
             }
 
             posX=0;
             posY=0;
-            if(turnFlag ==0)
+            if(turnFlag ==0 )
             {
                 serversTurn();
 
             }
-            else{
+            else {
 
                 clientsTurn();
             }
+            isAllShipSunk();
 
         }
+
+
+
 
         if(isAllShipSunk())
         {
             gameView.showAllShipSunkMessage();
             gameView.showGameOverMessage();
+            System.out.println("You won");
+            dataOutputStreamToServer.writeInt(-101);
+            dataOutputStreamToServer.writeInt(posY);
+            dataOutputStreamToServer.writeInt(cellValue);
+            dataOutputStreamToServer.writeBoolean(sunk);
+            dataOutputStreamToServer.writeBoolean(hit);
+            dataOutputStreamToServer.writeInt(point);
         }
 
         sendWinnerNameToServer();
 
-        gameView.showWinnerName(winnerName);
+
 
 
 
     }
 
     private void sendWinnerNameToServer() throws IOException {
-        dataOutputStreamToServer.writeUTF(winnerName);
+
     }
 
 
     private void clientsTurn() throws IOException, InterruptedException {
 
-        int cellValue=-50,point=0;
-        boolean sunk=false;
-        boolean hit= false;
+        cellValue=-50;
+        point=0;
+        sunk=false;
+        hit= false;
 
         System.out.println("It's your turn");
         gameView.propmtInputMessageForRow();
@@ -144,7 +171,7 @@ public class Client {
             int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
             ConsoleInput con1 = new ConsoleInput(
                     1
-                    ,restTime
+                    ,29
                     ,
                     TimeUnit.SECONDS
             );
@@ -218,37 +245,46 @@ public class Client {
 
         System.out.println(enemy.getPlayerName()+"'s turn");
         int x,y,cell,point;
-        boolean sunk,hit;
+        boolean sunk,hit, allSunk;
         x=dataInputStreamFromServer.readInt();
+
         y=dataInputStreamFromServer.readInt();
         cell = dataInputStreamFromServer.readInt();
         sunk = dataInputStreamFromServer.readBoolean();
         hit = dataInputStreamFromServer.readBoolean();
         point = dataInputStreamFromServer.readInt();
 
-        if(x==0 || y==0)
-        {
-            System.out.println("Opponent didn't respond");
-            turnFlag =1;
-        }
-        else if(hit)
-        {
-            System.out.println("Oops! opponent has hit your ship");
-            if(sunk)
+        if( x != -101 ) {
+            if(x==0 || y==0)
             {
-                System.out.println("Oops! opponent has sunk your ship");
+                System.out.println("Opponent didn't respond");
+                turnFlag =1;
             }
-            enemyPoint=point;
-            System.out.println(playerClient.getPlayerName()+"'s point: "+playerClient.getPoints());
-            System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
-            turnFlag = 0;
+            else if(hit)
+            {
+                System.out.println("Oops! opponent has hit your ship");
+                if(sunk)
+                {
+                    System.out.println("Oops! opponent has sunk your ship");
+                }
+                enemyPoint=point;
+                System.out.println(playerClient.getPlayerName()+"'s point: "+playerClient.getPoints());
+                System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+                turnFlag = 0;
+            }
+            else{
+                System.out.println("Opponent has missed");
+                System.out.println(playerClient.getPlayerName()+"'s point: "+playerClient.getPoints());
+                System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
+                turnFlag = 1;
+            }
         }
-        else{
-            System.out.println("Opponent has missed");
-            System.out.println(playerClient.getPlayerName()+"'s point: "+playerClient.getPoints());
-            System.out.println(enemy.getPlayerName()+"'s point: "+enemyPoint);
-            turnFlag = 1;
+        else {
+            System.out.println(enemy.getPlayerName() + " wins");
+            System.exit(0);
         }
+
+
 
     }
 
@@ -394,11 +430,11 @@ public class Client {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == 2)
         {
             winnerName = enemy.getPlayerName();
             allSunk = true;
-            return allSunk;
+
         }
 
         sunk_count = 0;
@@ -410,18 +446,52 @@ public class Client {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == 2)
         {
             winnerName = playerClient.getPlayerName();
             allSunk = true;
-            return allSunk;
+
         }
 
-        return allSunk;
+        return  allSunk;
 
     }
 
 
+    public  String getWinnerName() {
+        boolean allSunk = false;
+        int sunk_count1 =0;
+        int sunk_count2 =0;
+        ArrayList<Ship> myShips = playerClient.getListOfShips();
+        ArrayList<Ship> enemyShips = enemy.getListOfShips();
+
+        for(int i=0; i<myShips.size(); i++)
+        {
+            if(myShips.get(i).isSunk())
+            {
+                sunk_count1++;
+            }
+        }
+
+
+
+
+        for(int i=0; i<enemyShips.size(); i++)
+        {
+            if(enemyShips.get(i).isSunk())
+            {
+                sunk_count2++;
+            }
+        }
+
+        if(sunk_count1 > sunk_count2) {
+            return enemy.getPlayerName();
+        } else if(sunk_count1 < sunk_count2) {
+            return playerClient.getPlayerName();
+        } else {
+            return "No one";
+        }
+    }
 
 
 
