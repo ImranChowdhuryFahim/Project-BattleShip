@@ -21,7 +21,6 @@ public class GameViewImp implements GameView {
     private String virtualPlayerSunkMessage = "Computer has sunk your ship";
     private String initializingBoardMessage = "Initializing Game Boards\n";
     private String humanPlayerShipDeployMessage = "Deploying your ships\n";
-    private String printingBoardMessage = "printing board\n";
     private String virtualPlayerShipDeployMessage = "Deploying Computer's ship\n";
     private String gameStartingMessage = "Start Firing\n";
     private String humanPlayerTurnMessage = "It's your Turn\n";
@@ -38,26 +37,11 @@ public class GameViewImp implements GameView {
     private String youWonMessage = "You won";
     private String turnMessageWithName = " 's turn.";
     private String connectedToServerMessage = "Successfully connected to the game server";
-    private String opponentDidnotRepondMessage = "Opponent Didn't respond";
+    private String opponentDidNotRespondMessage = "Opponent Didn't respond";
 
     @Override
     public void printWelcomeMessage() {
         System.out.println( welcomeText );
-    }
-
-    @Override
-    public void clearConsole() {
-
-    }
-
-    @Override
-    public void resetConsole() {
-
-    }
-
-    @Override
-    public void printWinMessage() {
-
     }
 
     @Override
@@ -154,7 +138,7 @@ public class GameViewImp implements GameView {
 
     @Override
     public void showOwnBoard(BoardImp board1) {
-
+        // printing own board with deployed ship
         int[][] board= board1.getBoard();
         System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
         System.out.println();
@@ -165,7 +149,7 @@ public class GameViewImp implements GameView {
             for (int j = 0; j < 15; j++) {
                 if( board[i][j] == -1)
                 {
-                    System.out.print("\t~");
+                    System.out.print("\t~"); // denotes empty cell
                 }
                 else if ( board[i][j] <= 2 ) {
                     System.out.print( "\tc" + (board[i][j] - ShipInfo.carrierType ));
@@ -238,26 +222,26 @@ public class GameViewImp implements GameView {
 
     @Override
     public void showEnemyBoard(BoardImp board1) {
+        // printing board containing fired cell
         int[][] board= board1.getBoard();
 
         System.out.println("\tA \tB \tC \tD \tE \tF \tG \tH \tI \tJ \tK \tL \tM \tN \tO");
         System.out.println();
-
 
         for (int i = 0; i < 10; i++) {
             System.out.print((i+1) + "");
             for (int j = 0; j < 15; j++) {
                 if( board[i][j] == -5)
                 {
-                    System.out.print("\tx");
+                    System.out.print("\tx"); // denote miss hit cell
                 }
                 else if( board[i][j] == 0)
                 {
-                    System.out.print("\t#");
+                    System.out.print("\t#");  // denotes hit cell
                 }
                 else
                 {
-                    System.out.print("\t~");
+                    System.out.print("\t~"); // denotes empty
                 }
 
             }
@@ -274,11 +258,6 @@ public class GameViewImp implements GameView {
     @Override
     public void showServerStartedMessage(String name) {
         System.out.println("Hi "+name+"!\n"+ "Server has started successfully");
-    }
-
-    @Override
-    public void showJoinedToServerMessage(String name) {
-        System.out.println();
     }
 
     @Override
@@ -299,11 +278,6 @@ public class GameViewImp implements GameView {
     @Override
     public void showOpponentsMissMessage() {
 System.out.println(humanOpponentMissMessage);
-    }
-
-    @Override
-    public void showOpponentsAlreadyHitMessage() {
-
     }
 
     @Override
@@ -338,6 +312,6 @@ System.out.println(humanOpponentMissMessage);
 
     @Override
     public  void printOpponentDidnotResponseMessage() {
-        System.out.println(opponentDidnotRepondMessage);
+        System.out.println(opponentDidNotRespondMessage);
     }
 }

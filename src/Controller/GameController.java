@@ -1,9 +1,12 @@
 package Controller;
 
+import Model.Board.Board;
 import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
+import Model.Player.Player;
 import Model.Player.VirtualPlayer;
 import Model.Ship.Ship;
+import Model.Ship.ShipInfo;
 import View.GameView;
 import View.GameViewImp;
 
@@ -27,6 +30,10 @@ public class GameController {
     private boolean isGameOver;
     private Timer timer ;
     private long gameStartingTime;
+    private int posX = 0,posY = 0;
+    int turnFlag = 0;
+    private Random random;
+
 
     public GameController(String playerName)
     {
@@ -34,7 +41,8 @@ public class GameController {
         this.gameView = new GameViewImp();
         this.humanPlayer = new HumanPlayer(playerName);
         this.virtualPlayer = new VirtualPlayer();
-
+        this.random = new Random();
+        this.scanner = new Scanner(System.in);
     }
 
     public void initializeGame()
@@ -58,7 +66,7 @@ public class GameController {
         delay(2);
         gameView.printVirtualPlayerShipDeploymentMessage();
         virtualPlayer.deployShips();
-        gameView.showOwnBoard(virtualPlayer.getCurrentBoard());
+//        gameView.showOwnBoard(virtualPlayer.getCurrentBoard());
 
         gameView.printGameStartingMessage();
         gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
@@ -72,10 +80,11 @@ public class GameController {
     public void executePlayerTurns() throws InterruptedException
     {
         long gameStartingTime = System.currentTimeMillis();
-        int turnFlag = 0;
-        scanner = new Scanner(System.in);
-        Random random = new Random();
-        int posX,posY;
+        turnFlag = 0;
+
+
+
+
         while (!isAllShipSunk())
         {
             int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
@@ -102,161 +111,18 @@ public class GameController {
             posY=0;
             if(turnFlag == 0) // human Player's Turn
             {
-
-                  gameView.printHumanPlayerTurnMessage();
-                  gameView.propmtInputMessageForRow();
-
-                  int posx = 0,posy = 0;
-
-
-//                  posX = scanner.nextInt();
-
-                ConsoleInput con = new ConsoleInput(
-                        1
-                        ,
-                        30,
-                        TimeUnit.SECONDS
-                );
-                long startingTime = System.currentTimeMillis();
-
-                String inputLine = con.readLine();
-
-                if(inputLine != null) {
-                    posX = Integer.parseInt(inputLine);
-                }
-
-//                System.out.println("Done. Your input was: " + posX);
-
-                  while ((posX > 10 || posX < 1) && posX != 0) {
-
-                        gameView.invalidRowWarning();
-                      inputLine = con.readLine();
-                      if(inputLine != null) {
-                          posX = Integer.parseInt(inputLine);
-                      }
-                  }
-
-                  if(posX != 0) {
-                      int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
-                      ConsoleInput con1 = new ConsoleInput(
-                              1
-                              ,restTime
-                              ,
-                              TimeUnit.SECONDS
-                      );
-
-                      gameView.propmtInputMessageForColumn();
-                      inputLine = con1.readLine();
-                      if(inputLine != null) {
-                          posY = Integer.parseInt(inputLine);
-                      }
-
-                      while ((posY > 15 || posY < 1) && posY != 0 ) {
-
-                          gameView.invalidColWarning();
-                          inputLine = con1.readLine();
-                          if(inputLine != null) {
-                              posY = Integer.parseInt(inputLine);
-                          }
-                      }
-                      if(posX > 0 && posY > 0) {
-
-
-                          if (virtualPlayer.getCurrentBoard().isHit(posX , posY )) {
-                              turnFlag = 0;
-
-                          } else {
-
-                              turnFlag = 1;
-                          }
-
-                          humanPlayer.performPlayerTurn(virtualPlayer, posX, posY);
-                          gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
-
-
-                      } else {
-                          turnFlag = 1;
-                      }
-                  }
-                  else {
-                      turnFlag = 1;
-                  }
-
-
-
-
-
-
-
-
-
-
+                humanPlayersTurn();
             }
 
             else {
                 // Virtual Player's Turn
-                    gameView.printVirtualPlayerTurnMessage();
-
-                if(!wasHit())
-                {
-                    posX = random.nextInt(10);
-                    while (posX < 1) {
-                        posX = random.nextInt(10);
-                    }
-
-                    posY = random.nextInt(15);
-                    while (posY < 1) {
-                        posY = random.nextInt(15);
-                    }
-                }
-                else {
-
-                    if(isRightMovePossible())
-                    {
-                        // Right move
-                        posX=lastHitPosX;
-                        posY=lastHitPosY+1;
-                    }
-                    else {
-                        if(isUpMovePossible())
-                        {
-                            // Up move
-                            posX=lastHitPosX+1;
-                            posY=lastHitPosY;
-                        }
-                        else {
-                                // Down move
-                                posX=lastHitPosX-1;
-                                posY=lastHitPosY;
-
-                        }
-
-                    }
-                }
-
-                if(humanPlayer.getCurrentBoard().isHit(posX,posY))
-                {
-                    lastHitPosX = posX;
-                    lastHitPosY = posY;
-                    turnFlag = 1;
-                }
-                else{
-                    lastHitPosX = -1;
-                    lastHitPosY = -1;
-                    turnFlag = 0;
-                }
-
-
-                    virtualPlayer.performPlayerTurn(humanPlayer,posX,posY);
-
-
-
+                virtualPlayersTurn();
 
             }
 
 
-            gameView.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());
-            gameView.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());
+            gameView.printPoint(humanPlayer.getPlayerType(), humanPlayer.getPoints());      // prints human player's points
+            gameView.printPoint(virtualPlayer.getPlayerType(), virtualPlayer.getPoints());  // prints virtual player's points
 
         }
 
@@ -265,9 +131,148 @@ public class GameController {
         {
 
             gameView.showAllShipSunkMessage();
+            gameView.showGameOverMessage();
             gameView.showWinnerName(winnerName);
         }
 
+    }
+
+    private void virtualPlayersTurn() {
+        gameView.printVirtualPlayerTurnMessage();
+
+        if(!wasHit())
+        { // if last firing is not a hit, then taking random coordinate
+            posX = random.nextInt(10);
+            while (posX < 1) {
+                posX = random.nextInt(10);
+            }
+
+            posY = random.nextInt(15);
+            while (posY < 1) {
+                posY = random.nextInt(15);
+            }
+        }
+        else {
+
+            if(isRightMovePossible())
+            {
+                // Right move
+                posX=lastHitPosX;
+                posY=lastHitPosY+1;
+            }
+            else {
+                if(isUpMovePossible())
+                {
+                    // Up move
+                    posX=lastHitPosX+1;
+                    posY=lastHitPosY;
+                }
+                else {
+                    // Down move
+                    posX=lastHitPosX-1;
+                    posY=lastHitPosY;
+
+                }
+
+            }
+        }
+
+        if(humanPlayer.getCurrentBoard().isHit(posX,posY))
+        {
+            // if current fire is a hit, then storing the coordinates to use make best guess
+            lastHitPosX = posX;
+            lastHitPosY = posY;
+            turnFlag = 1;     // computer turn remains
+        }
+        else{
+            lastHitPosX = -1; // denotes last fire was a miss
+            lastHitPosY = -1;
+            turnFlag = 0;    // changing turn
+        }
+
+
+
+        performPlayerTurn(virtualPlayer, humanPlayer, posX, posY);
+    }
+
+    private void humanPlayersTurn() throws InterruptedException {
+
+
+        gameView.printHumanPlayerTurnMessage();
+        gameView.propmtInputMessageForRow();
+
+        ConsoleInput con = new ConsoleInput(  // it waits 30 seconds after prompting message for input
+                1
+                ,
+                30,
+                TimeUnit.SECONDS
+        );
+        long startingTime = System.currentTimeMillis();
+
+        String inputLine = con.readLine();
+
+        if(inputLine != null) {               // null means user didn't put any input
+            posX = Integer.parseInt(inputLine);
+        }
+
+
+
+        while ((posX > 10 || posX < 1) && posX != 0) { // true only if posX is valid for the board
+
+            gameView.invalidRowWarning();
+            inputLine = con.readLine();
+            if(inputLine != null) {
+                posX = Integer.parseInt(inputLine);
+            }
+        }
+
+        if(posX != 0) { // false if user puts no input
+
+            int restTime = (int) (30 - (System.currentTimeMillis() - startingTime) / 1000);
+
+            ConsoleInput con1 = new ConsoleInput(
+                    1
+                    ,restTime
+                    ,
+                    TimeUnit.SECONDS
+            );
+
+            gameView.propmtInputMessageForColumn();
+            inputLine = con1.readLine();
+            if(inputLine != null) {
+                posY = Integer.parseInt(inputLine);
+            }
+
+            while ((posY > 15 || posY < 1) && posY != 0 ) {
+
+                gameView.invalidColWarning();
+                inputLine = con1.readLine();
+                if(inputLine != null) {
+                    posY = Integer.parseInt(inputLine);
+                }
+            }
+
+            if(posX > 0 && posY > 0) {
+
+                if (virtualPlayer.getCurrentBoard().isHit(posX , posY )) {
+                    turnFlag = 0; // turn remains same
+
+                } else {
+
+                    turnFlag = 1;  // turn changes
+                }
+
+                performPlayerTurn(humanPlayer, virtualPlayer, posX, posY);
+                gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
+
+
+            } else {
+                turnFlag = 1; // turn changes
+            }
+        }
+        else {
+            turnFlag = 1;  // turn changes
+        }
     }
 
     public void delay(int time)  {
@@ -279,7 +284,7 @@ public class GameController {
         }
     }
 
-    public boolean isAllShipSunk()
+    public boolean isAllShipSunk()  // checking  if all ships is sunk
     {
         boolean allSunk = false;
         int sunk_count =0;
@@ -336,7 +341,7 @@ public class GameController {
         return lastHitPosX < 10;
     }
 
-    public  String getWinnerName() {
+    public  String getWinnerName() {  // deriving winner based on the sunk count
         boolean allSunk = false;
         int sunk_count1 =0;
         int sunk_count2 =0;
@@ -368,6 +373,67 @@ public class GameController {
             return virtualPlayer.getPlayerName();
         } else {
             return "No one";
+        }
+    }
+
+    public void performPlayerTurn ( Player currentPlayer, Player enemyPlayer, int posX, int posY) {
+        GameView gameView = new GameViewImp();
+        Board enemyBoard ;
+        ArrayList<Ship> enemyShipList ;
+        enemyBoard = enemyPlayer.getCurrentBoard();
+        enemyShipList = enemyPlayer.getListOfShips();
+
+        if(enemyBoard.isHit(posX, posY)) {
+            gameView.printHitMessage(currentPlayer.getPlayerType());
+            int cellValue = enemyBoard.getCellValue(posX, posY);
+            int shipType = cellValueToType(cellValue);
+            int shipInstanceNumber = cellValue - shipType;
+
+            for (Ship ship: enemyShipList ) {
+                if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
+                    ship.hitShip();
+                    currentPlayer.increasePoint();
+                    if(ship.isSunk()) {
+                        gameView.printSunkMessage(currentPlayer.getPlayerType());
+                        currentPlayer.increasePoint();
+                    }
+
+                }
+            }
+
+            enemyBoard.fire(posX,posY);
+
+        } else {
+
+            if(enemyBoard.getCellValue(posX, posY) == 0 || enemyBoard.getCellValue(posX, posY) == -5)
+            {
+                gameView.printAlreadyFiredMessage(currentPlayer.getPlayerType());
+            }
+            else{
+                gameView.printMissMessage(currentPlayer.getPlayerType());
+            }
+
+            enemyBoard.fire(posX,posY);
+
+        }
+
+    }
+
+    public int cellValueToType (int cellValue) { // computing type value from  cellvalue
+        if (  cellValue <= 2 ) {
+            return ShipInfo.carrierType;
+        }
+        else if(cellValue <= 5 ) {
+            return ShipInfo.battleShipType;
+        }
+        else if (cellValue <= 10) {
+            return ShipInfo.destroyerType;
+        }
+        else if (cellValue <= 18) {
+            return ShipInfo.superPatrolType;
+        }
+        else {
+            return ShipInfo.patrolBoatType;
         }
     }
 }

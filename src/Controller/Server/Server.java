@@ -33,19 +33,20 @@ public class Server {
     private boolean hit= false;
 
 
-    // save life
-    public  static  boolean allSunk = false;
 
-    Scanner scanner =new Scanner(System.in);
-    HumanPlayer serverPlayer;
-    HumanPlayer enemy;
-    GameView gameView;
+    private  boolean allSunk = false;
+
+    private Scanner scanner;
+    private HumanPlayer serverPlayer;
+    private HumanPlayer enemy;
+    private GameView gameView;
 
     public Server(String name)
     {
         this.name = name;
-        serverPlayer = new HumanPlayer(name);
-        gameView = new GameViewImp();
+        this.serverPlayer = new HumanPlayer(name);
+        this.gameView = new GameViewImp();
+        this.scanner =new Scanner(System.in);
     }
 
 
@@ -81,7 +82,7 @@ public class Server {
         {
             int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
 
-            if( timeElapse >= 300 ){
+            if( timeElapse >= 300 ){ // game ends on 5th minute
                 gameView.showTimeOverMessage();
                 if(enemyPoint > serverPlayer.getPoints()) {
 
@@ -171,7 +172,7 @@ public class Server {
     private void clientsTurn() throws IOException {
 
         gameView.printTurnMessageWithName(enemy.getPlayerName());
-        int x,y,cell,point;
+        int x, y, cell, point;
         boolean sunk,hit;
         x=dataInputStreamFromClient.readInt();
         y=dataInputStreamFromClient.readInt();
@@ -179,6 +180,7 @@ public class Server {
         sunk = dataInputStreamFromClient.readBoolean();
         hit = dataInputStreamFromClient.readBoolean();
         point = dataInputStreamFromClient.readInt();
+
         //no input so its my turn
         if(x != -101) {
 
@@ -261,10 +263,10 @@ public class Server {
         }
 
         if(posX != 0) {
-            int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
+            int restTime = (int) (30 - (System.currentTimeMillis() - startingTime) / 1000);
             ConsoleInput con1 = new ConsoleInput(
                     1
-                    ,30
+                    ,restTime
                     ,
                     TimeUnit.SECONDS
             );

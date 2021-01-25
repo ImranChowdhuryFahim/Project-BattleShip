@@ -24,7 +24,7 @@ public class Client {
     private DataOutputStream dataOutputStreamToServer;
     private ObjectInputStream objectInputStreamFromServer;
     private ObjectOutputStream objectOutputStreamToServer;
-    private Scanner scanner =new Scanner(System.in);
+    private Scanner scanner;
     private HumanPlayer playerClient;
     private HumanPlayer enemy;
     private GameView gameView;
@@ -40,11 +40,12 @@ public class Client {
     public Client(String name)
     {
         this.name = name;
-        playerClient = new HumanPlayer(name);
-        gameView = new GameViewImp();
+        this.playerClient = new HumanPlayer(name);
+        this.gameView = new GameViewImp();
+        this.scanner =new Scanner(System.in);
     }
 
-    public void initialize() throws IOException {
+    public void initialize() throws IOException {  // connecting to the server
         client = new Socket("localhost",3000);
 
         gameView.printConnectedToServerMessage(name);
@@ -72,9 +73,9 @@ public class Client {
 
         while (!isAllShipSunk())
         {
-            int timeElapse = (int) ((System.currentTimeMillis() -gameStartingTime) / 1000);
+            int timeElapse = (int) ((System.currentTimeMillis() - gameStartingTime) / 1000);
 
-            if( timeElapse >= 300 ){
+            if( timeElapse >= 300 ){ // ends on 5th minute
                 gameView.showTimeOverMessage();
                 if(enemyPoint > playerClient.getPoints()) {
 
@@ -94,7 +95,7 @@ public class Client {
 
             posX=0;
             posY=0;
-            if(turnFlag ==0 )
+            if(turnFlag ==0 ) // denote server player turn
             {
                 serversTurn();
 
@@ -103,12 +104,9 @@ public class Client {
 
                 clientsTurn();
             }
-            isAllShipSunk();
+
 
         }
-
-
-
 
         if(isAllShipSunk())
         {
@@ -124,18 +122,7 @@ public class Client {
             dataOutputStreamToServer.writeInt(point);
         }
 
-        sendWinnerNameToServer();
-
-
-
-
-
     }
-
-    private void sendWinnerNameToServer() throws IOException {
-
-    }
-
 
     private void clientsTurn() throws IOException, InterruptedException {
 
@@ -174,7 +161,7 @@ public class Client {
         }
 
         if(posX != 0) {
-            int restTime = (int)(System.currentTimeMillis() - startingTime) / 1000;
+            int restTime = (int) (30 -(System.currentTimeMillis() - startingTime) / 1000);
             ConsoleInput con1 = new ConsoleInput(
                     1
                     ,29
@@ -341,21 +328,20 @@ public class Client {
     public int cellValueToType (int cellValue) {
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
-        } else if(cellValue <= 5 ) {
+        }
+        else if(cellValue <= 5 ) {
             return ShipInfo.battleShipType;
-        } else if (cellValue <= 10) {
+        }
+        else if (cellValue <= 10) {
             return ShipInfo.destroyerType;
-        } else if (cellValue <= 18) {
+        }
+        else if (cellValue <= 18) {
             return ShipInfo.superPatrolType;
-        } else {
+        }
+        else {
             return ShipInfo.patrolBoatType;
         }
     }
-
-
-
-
-
 
     public boolean performPlayerTurn(Player enemyPlayer,int posX,int posY)
     {
@@ -409,13 +395,6 @@ public class Client {
         return sunk;
 
     }
-
-
-
-
-
-
-
 
     public void delay(int time)  {
 
@@ -490,9 +469,6 @@ public class Client {
             }
         }
 
-
-
-
         for(int i=0; i<enemyShips.size(); i++)
         {
             if(enemyShips.get(i).isSunk())
@@ -509,10 +485,6 @@ public class Client {
             return "No one";
         }
     }
-
-
-
-
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
        Client client = new Client("Matin");

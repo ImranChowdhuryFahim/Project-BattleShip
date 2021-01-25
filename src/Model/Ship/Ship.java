@@ -18,7 +18,7 @@ public abstract class Ship implements Serializable {
 
     public void hitShip()
     {
-        --shipHealth;
+        --shipHealth; // decreasing ship health by one if hit once
 
     }
 
@@ -32,7 +32,7 @@ public abstract class Ship implements Serializable {
         return shipInstance;
     }
 
-    public void deployShip()
+    public void deployShip()  // randomly deploying ship horizontally on user game board
     {
         Random random= new Random();
         boolean deployed= false;
