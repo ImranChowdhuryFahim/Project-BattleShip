@@ -55,7 +55,6 @@ public interface GameView {
 
     public void showServerStartedMessage(String name);
 
-
     public void showServerWaitingMessage();
 
     public void showPlayerJoinedMessage();
@@ -76,5 +75,7 @@ public interface GameView {
 
     public  void printConnectedToServerMessage(String name);
 
-    public  void printOpponentDidnotResponseMessage();
+    public  void printOpponentDidNotResponseMessage();
+
+    public void printStartServerWarning();
 }

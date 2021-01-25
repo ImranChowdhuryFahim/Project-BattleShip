@@ -38,6 +38,7 @@ public class GameViewImp implements GameView {
     private String turnMessageWithName = " 's turn.";
     private String connectedToServerMessage = "Successfully connected to the game server";
     private String opponentDidNotRespondMessage = "Opponent Didn't respond";
+    private String startServerWarning = "Please start server";
 
     @Override
     public void printWelcomeMessage() {
@@ -311,7 +312,12 @@ System.out.println(humanOpponentMissMessage);
     }
 
     @Override
-    public  void printOpponentDidnotResponseMessage() {
+    public  void printOpponentDidNotResponseMessage() {
         System.out.println(opponentDidNotRespondMessage);
+    }
+
+    @Override
+    public void printStartServerWarning() {
+        System.out.println(startServerWarning);
     }
 }

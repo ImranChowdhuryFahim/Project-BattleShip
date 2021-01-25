@@ -77,7 +77,7 @@ public class GameController {
 
     }
 
-    public void executePlayerTurns() throws InterruptedException
+    public void playGame() throws InterruptedException
     {
         long gameStartingTime = System.currentTimeMillis();
         turnFlag = 0;

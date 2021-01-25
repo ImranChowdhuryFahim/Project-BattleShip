@@ -46,7 +46,15 @@ public class Client {
     }
 
     public void initialize() throws IOException {  // connecting to the server
-        client = new Socket("localhost",3000);
+
+        try {
+            client = new Socket("localhost",3000);
+        } catch (IOException e) {
+            gameView.printStartServerWarning();
+            terminate();
+            e.printStackTrace();
+        }
+
 
         gameView.printConnectedToServerMessage(name);
         dataInputStreamFromServer = new DataInputStream(client.getInputStream());
@@ -65,7 +73,7 @@ public class Client {
 
 
 
-    public void gamePlay() throws IOException, ClassNotFoundException, InterruptedException {
+    public void playGame() throws IOException, ClassNotFoundException, InterruptedException {
 
         InitializeGame();
 
@@ -251,7 +259,7 @@ public class Client {
             if(x==0 || y==0)
             {
 
-                gameView.printOpponentDidnotResponseMessage();
+                gameView.printOpponentDidNotResponseMessage();
                 turnFlag =1;
             }
             else if(hit)
@@ -455,7 +463,6 @@ public class Client {
 
 
     public  String getWinnerName() {
-        boolean allSunk = false;
         int sunk_count1 =0;
         int sunk_count2 =0;
         ArrayList<Ship> myShips = playerClient.getListOfShips();
@@ -486,10 +493,21 @@ public class Client {
         }
     }
 
+    public void terminate()
+    {
+        System.exit(-1);
+    }
+
+    public  void terminateGame () {
+        System.exit(0);
+    }
+
+
+
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
        Client client = new Client("Matin");
        client.initialize();
-       client.gamePlay();
+       client.playGame();
     }
 
 }

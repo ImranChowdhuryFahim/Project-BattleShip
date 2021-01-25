@@ -54,7 +54,7 @@ public class Server {
 
 
 
-    public void initializeServer() throws IOException {
+    public void initialize() throws IOException {
         server = new ServerSocket(3000);
         gameView.showServerStartedMessage(name);
         gameView.showServerWaitingMessage();
@@ -71,7 +71,7 @@ public class Server {
 
 
 
-    public void gamePlay() throws IOException, ClassNotFoundException, InterruptedException {
+    public void playGame() throws IOException, ClassNotFoundException, InterruptedException {
 
 
         InitializeGame();
@@ -512,8 +512,8 @@ public class Server {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
         Server s = new Server("Imran");
-        s.initializeServer();
-        s.gamePlay();
+        s.initialize();
+        s.playGame();
 
     }
 
