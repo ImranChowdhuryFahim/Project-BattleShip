@@ -121,7 +121,7 @@ public abstract class Player implements Serializable {
         enemyShipList = enemyPlayer.getListOfShips();
 
         if(enemyBoard.isHit(posX, posY)) {
-            gameView.printHitMessage(playerType,playerName);
+            gameView.printHitMessage(playerType);
             int cellValue = enemyBoard.getCellValue(posX, posY);
             int shipType = cellValueToType(cellValue);
             int shipInstanceNumber = cellValue - shipType;
@@ -131,7 +131,7 @@ public abstract class Player implements Serializable {
                     ship.hitShip();
                     points++;
                     if(ship.isSunk()) {
-                        gameView.printSunkMessage(playerType,playerName);
+                        gameView.printSunkMessage(playerType);
                         points++;
                     }
 
@@ -146,10 +146,10 @@ public abstract class Player implements Serializable {
 
             if(enemyBoard.getCellValue(posX, posY) == 0 || enemyBoard.getCellValue(posX, posY) == -5)
             {
-                gameView.printAlreadyFiredMessage(playerType,playerName);
+                gameView.printAlreadyFiredMessage(playerType);
             }
             else{
-                gameView.printMissMessage(playerType,playerName);
+                gameView.printMissMessage(playerType);
             }
 
             enemyBoard.fire(posX,posY);

@@ -35,7 +35,10 @@ public class GameViewImp implements GameView {
     private String serverWaitingMessage = "Waiting for another player to join";
     private String playerJoinedMessage = "Player has joined";
     private String humanOpponentSunkMessage = "Oops! Opponent has sunk your ship";
-
+    private String youWonMessage = "You won";
+    private String turnMessageWithName = " 's turn.";
+    private String connectedToServerMessage = "Successfully connected to the game server";
+    private String opponentDidnotRepondMessage = "Opponent Didn't respond";
 
     @Override
     public void printWelcomeMessage() {
@@ -79,7 +82,7 @@ public class GameViewImp implements GameView {
 
 
     @Override
-    public void printAlreadyFiredMessage(int playerType,String playerName) {
+    public void printAlreadyFiredMessage(int playerType) {
 
         if(playerType == 1)
         {
@@ -102,7 +105,7 @@ public class GameViewImp implements GameView {
     }
 
     @Override
-    public void printHitMessage(int playerType, String playerName) {
+    public void printHitMessage(int playerType) {
         if(playerType==1)
         {
             System.out.println(humanPlayerHitMessage);
@@ -113,7 +116,7 @@ public class GameViewImp implements GameView {
     }
 
     @Override
-    public void printMissMessage(int playerType, String playerName) {
+    public void printMissMessage(int playerType) {
         if(playerType==1)
         {
             System.out.println(humanPlayerMissMessage);
@@ -124,7 +127,7 @@ public class GameViewImp implements GameView {
     }
 
     @Override
-    public void printSunkMessage(int playerType, String playerName) {
+    public void printSunkMessage(int playerType) {
         if(playerType==1)
         {
             System.out.println(humanPlayerSunkMessage);
@@ -313,5 +316,28 @@ System.out.println(humanOpponentMissMessage);
         System.out.println(humanOpponentSunkMessage);
     }
 
+    @Override
+    public void printWinMessageWithPlayerName(String name) {
+        System.out.println(name + " wins");
+    }
 
+    @Override
+    public void printYouWonMessage() {
+        System.out.println(youWonMessage);
+    }
+
+    @Override
+    public void printTurnMessageWithName(String name) {
+        System.out.println(name + turnMessageWithName );
+    }
+
+    @Override
+    public  void printConnectedToServerMessage(String name){
+        System.out.println( "Hi " + name + " " + connectedToServerMessage);
+    }
+
+    @Override
+    public  void printOpponentDidnotResponseMessage() {
+        System.out.println(opponentDidnotRepondMessage);
+    }
 }

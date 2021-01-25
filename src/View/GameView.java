@@ -20,14 +20,14 @@ public interface GameView {
 
     public void showAllShipSunkMessage();
 
-    public void printAlreadyFiredMessage(int playerType,String playerName);
+    public void printAlreadyFiredMessage(int playerType);
 
     public void printHumanPlayerTurnMessage();
     public void printVirtualPlayerTurnMessage();
 
-    public void printHitMessage(int playerType, String playerName);
-    public void printMissMessage(int playerType, String playerName);
-    public  void printSunkMessage(int playerType, String playerName);
+    public void printHitMessage(int playerType);
+    public void printMissMessage(int playerType);
+    public  void printSunkMessage(int playerType);
     public void printPoint(int playerType, int point);
 
     public void showOwnBoard(BoardImp board);
@@ -56,5 +56,9 @@ public interface GameView {
     public void showOpponentsAlreadyHitMessage();
     public void showPointsWithName(String name,int point);
     public void showHumanOpponentPlayerSunkMessage();
-
+    public void printWinMessageWithPlayerName(String name);
+    public void printYouWonMessage();
+    public void printTurnMessageWithName(String name);
+    public  void printConnectedToServerMessage(String name);
+    public  void printOpponentDidnotResponseMessage();
 }

@@ -82,8 +82,21 @@ public class GameController {
 
             if( timeElapse >= 300 ){
                 gameView.showTimeOverMessage();
-                gameView.showWinnerName(winnerName);
+                if(virtualPlayer.getPoints() > humanPlayer.getPoints()) {
+
+                    gameView.printWinMessageWithPlayerName(virtualPlayer.getPlayerName());
+                }
+                else if (virtualPlayer.getPoints() == humanPlayer.getPoints()) {
+                    delay(2);
+                    gameView.printWinMessageWithPlayerName(getWinnerName());
+                }
+                else {
+
+                    gameView.printYouWonMessage();
+                }
+
                 break;
+
             }
             posX=0;
             posY=0;
@@ -323,4 +336,38 @@ public class GameController {
         return lastHitPosX < 10;
     }
 
+    public  String getWinnerName() {
+        boolean allSunk = false;
+        int sunk_count1 =0;
+        int sunk_count2 =0;
+        ArrayList<Ship> humanPlayerShips = humanPlayer.getListOfShips();
+        ArrayList<Ship> virtualPlayerShip = virtualPlayer.getListOfShips();
+
+        for(int i=0; i<humanPlayerShips.size(); i++)
+        {
+            if(humanPlayerShips.get(i).isSunk())
+            {
+                sunk_count1++;
+            }
+        }
+
+
+
+
+        for(int i=0; i<virtualPlayerShip.size(); i++)
+        {
+            if(virtualPlayerShip.get(i).isSunk())
+            {
+                sunk_count2++;
+            }
+        }
+
+        if(sunk_count1 > sunk_count2) {
+            return humanPlayer.getPlayerName();
+        } else if(sunk_count1 < sunk_count2) {
+            return virtualPlayer.getPlayerName();
+        } else {
+            return "No one";
+        }
+    }
 }
