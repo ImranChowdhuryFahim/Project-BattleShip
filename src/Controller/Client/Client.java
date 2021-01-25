@@ -164,7 +164,7 @@ public class Client {
             int restTime = (int) (30 -(System.currentTimeMillis() - startingTime) / 1000);
             ConsoleInput con1 = new ConsoleInput(
                     1
-                    ,29
+                    ,restTime
                     ,
                     TimeUnit.SECONDS
             );
