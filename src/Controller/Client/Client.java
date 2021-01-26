@@ -1,6 +1,5 @@
 package Controller.Client;
 
-import Controller.Server.Server;
 import Model.Board.Board;
 import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
@@ -11,7 +10,6 @@ import View.GameView;
 import View.GameViewImp;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -141,7 +139,7 @@ public class Client {
 
 
         gameView.printHumanPlayerTurnMessage();
-        gameView.propmtInputMessageForRow();
+        gameView.promptInputMessageForRow();
 
         ConsoleInput con = new ConsoleInput(
                 1
@@ -177,7 +175,7 @@ public class Client {
                     TimeUnit.SECONDS
             );
 
-            gameView.propmtInputMessageForColumn();
+            gameView.promptInputMessageForColumn();
             inputLine = con1.readLine();
             if(inputLine != null) {
                 posY = Integer.parseInt(inputLine);

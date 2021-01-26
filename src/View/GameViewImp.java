@@ -74,7 +74,7 @@ public class GameViewImp implements GameView {
             System.out.println(humanAlreadyFired);
         }
         else{
-            System.out.println(computerAlreadyFired);
+            System.out.println(virtualPlayerMissMessage);
         }
 
     }
@@ -187,12 +187,12 @@ public class GameViewImp implements GameView {
     }
 
     @Override
-    public void propmtInputMessageForRow() {
+    public void promptInputMessageForRow() {
         System.out.print(inputMessageForRow);
     }
 
     @Override
-    public void propmtInputMessageForColumn() {
+    public void promptInputMessageForColumn() {
         System.out.print(inputMessageForCol);
     }
 

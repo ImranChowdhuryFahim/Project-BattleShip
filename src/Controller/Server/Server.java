@@ -1,7 +1,6 @@
 package Controller.Server;
 
 import Model.Board.Board;
-import Model.Board.BoardImp;
 import Model.Input.ConsoleInput;
 import Model.Player.HumanPlayer;
 import Model.Player.Player;
@@ -235,7 +234,7 @@ public class Server {
 
         gameView.printHumanPlayerTurnMessage();
 
-        gameView.propmtInputMessageForRow();
+        gameView.promptInputMessageForRow();
 
         ConsoleInput con = new ConsoleInput(
                 1
@@ -271,7 +270,7 @@ public class Server {
                     TimeUnit.SECONDS
             );
 
-            gameView.propmtInputMessageForColumn();
+            gameView.promptInputMessageForColumn();
             inputLine = con1.readLine();
             if(inputLine != null) {
                 posY = Integer.parseInt(inputLine);

@@ -1,5 +1,8 @@
 package Model.Ship;
 
+import Model.Board.Board;
+import Model.Board.BoardImp;
+
 import java.io.Serializable;
 import java.util.Random;
 
@@ -35,17 +38,16 @@ public abstract class Ship implements Serializable {
     public void deployShip()  // randomly deploying ship horizontally on user game board
     {
         Random random= new Random();
+        Board boardInfo = new BoardImp();
         boolean deployed= false;
-        int boardRow=10;
-        int boardColumn=15;
         int shipDenotedInt = shipType+shipInstance;
 
         while(!deployed)
             {
 
                 // Randomly calculating starting coordinates for ship placement
-                int posX= random.nextInt(boardRow-1);
-                int posY= random.nextInt(boardColumn-1);
+                int posX= random.nextInt(boardInfo.getBoardRow() - 1);
+                int posY= random.nextInt(boardInfo.getBoardColumn() - 1);
 
                 // checking if the starting cell is valid for the ship placement
                 boolean slotFound = true;

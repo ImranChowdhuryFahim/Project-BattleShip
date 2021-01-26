@@ -15,7 +15,6 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class GameController {
@@ -31,7 +30,7 @@ public class GameController {
     private Timer timer ;
     private long gameStartingTime;
     private int posX = 0,posY = 0;
-    int turnFlag = 0;
+    private int turnFlag = 0;
     private Random random;
 
 
@@ -142,15 +141,19 @@ public class GameController {
 
         if(!wasHit())
         { // if last firing is not a hit, then taking random coordinate
-            posX = random.nextInt(10);
-            while (posX < 1) {
-                posX = random.nextInt(10);
-            }
 
-            posY = random.nextInt(15);
-            while (posY < 1) {
-                posY = random.nextInt(15);
-            }
+            do{
+                posX = random.nextInt(virtualPlayer.getCurrentBoard().getBoardRow());
+                while (posX < 1) {
+                    posX = random.nextInt(virtualPlayer.getCurrentBoard().getBoardRow());
+                }
+
+                posY = random.nextInt(virtualPlayer.getCurrentBoard().getBoardColumn());
+                while (posY < 1) {
+                    posY = random.nextInt(virtualPlayer.getCurrentBoard().getBoardColumn());
+                }
+            }while (humanPlayer.getCurrentBoard().isAlreadyFired(posX,posY));  // checks if the currently fired cell is already fired or not
+
         }
         else {
 
@@ -199,7 +202,7 @@ public class GameController {
 
 
         gameView.printHumanPlayerTurnMessage();
-        gameView.propmtInputMessageForRow();
+        gameView.promptInputMessageForRow();
 
         ConsoleInput con = new ConsoleInput(  // it waits 30 seconds after prompting message for input
                 1
@@ -237,7 +240,7 @@ public class GameController {
                     TimeUnit.SECONDS
             );
 
-            gameView.propmtInputMessageForColumn();
+            gameView.promptInputMessageForColumn();
             inputLine = con1.readLine();
             if(inputLine != null) {
                 posY = Integer.parseInt(inputLine);
@@ -419,7 +422,7 @@ public class GameController {
 
     }
 
-    public int cellValueToType (int cellValue) { // computing type value from  cellvalue
+    public int cellValueToType (int cellValue) { // computing type value from  cellValue
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
         }

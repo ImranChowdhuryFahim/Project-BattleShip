@@ -35,9 +35,9 @@ public interface GameView {
 
     public void printWarning();
 
-    public void propmtInputMessageForRow();
+    public void promptInputMessageForRow();
 
-    public void propmtInputMessageForColumn();
+    public void promptInputMessageForColumn();
 
     public void invalidRowWarning();
 

@@ -65,6 +65,12 @@
         }
 
     }
+
+    @Override
+    public boolean isAlreadyFired(int posX, int posY)
+    {
+        return board[posX-1][posY-1] == 0 || board[posX-1][posY-1] == -5;
+    }
     @Override
     public int getCellValue(int posX, int posY) {
         return board[posX-1][posY-1];
