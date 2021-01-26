@@ -429,6 +429,7 @@ public class Server {
     {
         allSunk = false;
         int sunk_count =0;
+        int totalShipCount= ShipInfo.getTotalShipCount();
         ArrayList<Ship> myShips = serverPlayer.getListOfShips();
         ArrayList<Ship> enemyShips = enemy.getListOfShips();
 
@@ -440,7 +441,7 @@ public class Server {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == totalShipCount)
         {
             winnerName = enemy.getPlayerName();
             allSunk = true;
@@ -456,7 +457,7 @@ public class Server {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == totalShipCount)
         {
             winnerName = serverPlayer.getPlayerName();
             allSunk = true;

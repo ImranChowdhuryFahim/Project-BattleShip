@@ -23,5 +23,10 @@ public class ShipInfo {
     public static int battleShipQuantity=3;
     public static int destroyerQuantity=5;
     public static int superPatrolQuantity=8;
-    public static int patrolBoatQuantity=18;
+    public static int patrolBoatQuantity=10;
+
+    public static int getTotalShipCount()
+    {
+        return carrierQuantity+battleShipQuantity+destroyerQuantity+superPatrolQuantity+patrolBoatQuantity;
+    }
 }

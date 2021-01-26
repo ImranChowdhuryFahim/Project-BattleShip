@@ -291,6 +291,7 @@ public class GameController {
     {
         boolean allSunk = false;
         int sunk_count =0;
+        int totalShipCount = ShipInfo.getTotalShipCount();
         ArrayList<Ship> shipsOfHumanPlayer = humanPlayer.getListOfShips();
         ArrayList<Ship> shipsOfVirtualPlayer = virtualPlayer.getListOfShips();
 
@@ -302,7 +303,7 @@ public class GameController {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == totalShipCount)
         {
             winnerName = virtualPlayer.getPlayerName();
             allSunk = true;
@@ -318,7 +319,7 @@ public class GameController {
             }
         }
 
-        if(sunk_count == 28)
+        if(sunk_count == totalShipCount)
         {
             winnerName = humanPlayer.getPlayerName();
             allSunk = true;
