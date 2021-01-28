@@ -1,5 +1,6 @@
-package Model.Ship;
+package Test;
 
+import Model.Ship.ShipInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

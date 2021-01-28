@@ -185,7 +185,7 @@ public class Server {
 
             if(x==0 || y==0)
             {
-
+                gameView.printOpponentDidNotResponseMessage();
                 turnFlag =0;
             }
             else if(hit)

@@ -1,7 +1,8 @@
-package Model.Ship;
+package Test;
 
 import Model.Board.Board;
 import Model.Board.BoardImp;
+import Model.Ship.SuperPatrol;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

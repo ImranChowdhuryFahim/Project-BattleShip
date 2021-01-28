@@ -6,7 +6,6 @@ public interface GameView {
 
     public void printWelcomeMessage();
 
-
     public void showGameOverMessage();
 
     public void showTimeOverMessage();

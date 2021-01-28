@@ -60,7 +60,7 @@
                 board[posX-1][posY-1] = 0;  // 0 denotes hit
             }
             else {
-                board[posX-1][posY-1] = -5;  // 1 denotes miss
+                board[posX-1][posY-1] = -5;  // -5 denotes miss
             }
         }
 
