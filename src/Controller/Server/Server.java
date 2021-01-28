@@ -54,6 +54,7 @@ public class Server {
 
 
     public void initialize() throws IOException {
+        // initializes the socket connection
         server = new ServerSocket(3000);
         gameView.showServerStartedMessage(name);
         gameView.showServerWaitingMessage();
@@ -102,11 +103,11 @@ public class Server {
             }
             posX=0;
             posY=0;
-            if(turnFlag ==0)
+            if(turnFlag ==0) // 0 denotes server player turn
             {
                 serversTurn();
             }
-            else{
+            else{  // 1 denotes client player turn
 
                 clientsTurn();
 
@@ -140,6 +141,7 @@ public class Server {
 
 
     private void InitializeGame() throws IOException, ClassNotFoundException {
+        // initializes the game play for server side
         gameView.printBoardInitializationMessage();
         serverPlayer.initializeGameBoard();
         serverPlayer.loadShips();
@@ -169,7 +171,7 @@ public class Server {
 
 
     private void clientsTurn() throws IOException {
-
+        // listens to client's turn
         gameView.printTurnMessageWithName(enemy.getPlayerName());
         int x, y, cell, point;
         boolean sunk,hit;
@@ -226,7 +228,8 @@ public class Server {
 
 
     private void serversTurn() throws IOException, InterruptedException {
-
+        /* control left to human player to get row and col value, perform the turn based on user's input
+        and sends the update to the client */
         cellValue=-50; point=0;
         sunk=false;
         hit= false;
@@ -345,6 +348,7 @@ public class Server {
 
 
     public int cellValueToType (int cellValue) {
+        // calculates ship type from current cell value
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
         } else if(cellValue <= 5 ) {
@@ -366,6 +370,16 @@ public class Server {
 
     public boolean performPlayerTurn(Player enemyPlayer,int posX,int posY)
     {
+        /*
+         executes a player's turn
+            i. checks if it's a hit or not
+
+                i. find ship type and instance number
+                ii. identifies the ship
+                iii. increase points
+                 iv. checks if it's sunk or not
+
+         */
         boolean sunk =false;
         GameView gameView = new GameViewImp();
         Board enemyBoard ;
@@ -427,6 +441,7 @@ public class Server {
 
     public boolean isAllShipSunk()
     {
+        // checks if all ships are sunk or not
         allSunk = false;
         int sunk_count =0;
         int totalShipCount= ShipInfo.getTotalShipCount();
@@ -469,6 +484,7 @@ public class Server {
     }
 
     public  String getWinnerName() {
+        // gets the winner name based on sunk count
         boolean allSunk = false;
         int sunk_count1 =0;
         int sunk_count2 =0;
