@@ -1,11 +1,22 @@
 import Controller.GameController;
+import View.GameView;
+import View.GameViewImp;
+
+import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) throws InterruptedException{
 
+        Scanner scanner = new Scanner(System.in);
 
-        GameController gameController = new GameController("imran");
+        GameView gameView = new GameViewImp();
+
+        gameView.printWelcomeMessage();
+        gameView.enterYourNameMessage();
+        String name = scanner.nextLine();
+
+        GameController gameController = new GameController(name);
 
         gameController.initializeGame();
         gameController.playGame();

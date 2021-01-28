@@ -39,6 +39,7 @@ public class GameViewImp implements GameView {
     private String connectedToServerMessage = "Successfully connected to the game server";
     private String opponentDidNotRespondMessage = "Opponent Didn't respond";
     private String startServerWarning = "Please start server";
+    private String enterYourNameMessage = "Enter your name: ";
 
     @Override
     public void printWelcomeMessage() {
@@ -319,5 +320,10 @@ System.out.println(humanOpponentMissMessage);
     @Override
     public void printStartServerWarning() {
         System.out.println(startServerWarning);
+    }
+
+    @Override
+    public void enterYourNameMessage() {
+        System.out.print(enterYourNameMessage);
     }
 }

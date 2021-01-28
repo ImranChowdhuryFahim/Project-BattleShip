@@ -46,8 +46,7 @@ public class GameController {
 
     public void initializeGame()
     {
-
-
+        // initializes the game play
         gameView.printBoardInitializationMessage();
         humanPlayer.initializeGameBoard();
         virtualPlayer.initializeGameBoard();
@@ -65,7 +64,6 @@ public class GameController {
         delay(2);
         gameView.printVirtualPlayerShipDeploymentMessage();
         virtualPlayer.deployShips();
-//        gameView.showOwnBoard(virtualPlayer.getCurrentBoard());
 
         gameView.printGameStartingMessage();
         gameView.showEnemyBoard(virtualPlayer.getCurrentBoard());
@@ -78,11 +76,14 @@ public class GameController {
 
     public void playGame() throws InterruptedException
     {
+        /*
+            Controls the game flow
+            i.controls turn flow
+           ii. for each turn it checks if all ship is sunk, if 5 mins passes
+
+         */
         long gameStartingTime = System.currentTimeMillis();
         turnFlag = 0;
-
-
-
 
         while (!isAllShipSunk())
         {
@@ -137,6 +138,8 @@ public class GameController {
     }
 
     private void virtualPlayersTurn() {
+        // perform the turn based following the strategy
+
         gameView.printVirtualPlayerTurnMessage();
 
         if(!wasHit())
@@ -199,7 +202,7 @@ public class GameController {
     }
 
     private void humanPlayersTurn() throws InterruptedException {
-
+        // control left to human player to get row and col value, perform the turn
 
         gameView.printHumanPlayerTurnMessage();
         gameView.promptInputMessageForRow();
@@ -332,16 +335,19 @@ public class GameController {
 
     public boolean wasHit()
     {
+        // it helps the strategy by telling  if the last fire was a hit
         return lastHitPosX != -1 && lastHitPosY != -1;
     }
 
     public boolean isRightMovePossible()
     {
+        // if computer ended up in the last col of that row
         return lastHitPosY <14;
     }
 
     public boolean isUpMovePossible()
     {
+        // if computer ended up in the last first
         return lastHitPosX < 10;
     }
 
@@ -381,6 +387,17 @@ public class GameController {
     }
 
     public void performPlayerTurn ( Player currentPlayer, Player enemyPlayer, int posX, int posY) {
+        /*
+         executes a player's turn
+            i. checks if it's a hit or not
+
+                i. find ship type and instance number
+                ii. identifies the ship
+                iii. increase points
+                 iv. checks if it's sunk or not
+
+         */
+
         GameView gameView = new GameViewImp();
         Board enemyBoard ;
         ArrayList<Ship> enemyShipList ;
@@ -423,7 +440,10 @@ public class GameController {
 
     }
 
-    public int cellValueToType (int cellValue) { // computing type value from  cellValue
+    public int cellValueToType (int cellValue) {
+
+        // computing type value from  cellValue
+
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
         }

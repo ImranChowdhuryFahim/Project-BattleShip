@@ -504,9 +504,14 @@ public class Client {
 
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
-       Client client = new Client("Matin");
-       client.initialize();
-       client.playGame();
+        GameView gameView = new GameViewImp();
+        Scanner scanner = new Scanner( System.in );
+        gameView.printWelcomeMessage();
+        gameView.enterYourNameMessage();
+        String name = scanner.nextLine();
+        Client client = new Client(name);
+        client.initialize();
+        client.playGame();
     }
 
 }

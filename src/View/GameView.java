@@ -77,4 +77,6 @@ public interface GameView {
     public  void printOpponentDidNotResponseMessage();
 
     public void printStartServerWarning();
+
+    public void enterYourNameMessage();
 }

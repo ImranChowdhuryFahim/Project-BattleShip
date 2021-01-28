@@ -511,16 +511,15 @@ public class Server {
 
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
-        Server s = new Server("Imran");
+        GameView gameView = new GameViewImp();
+        Scanner scanner = new Scanner(System.in);
+        gameView.printWelcomeMessage();
+        gameView.enterYourNameMessage();
+        String name = scanner.nextLine();
+        Server s = new Server(name);
         s.initialize();
         s.playGame();
-
     }
-
-
-
-
-
 
 }
 

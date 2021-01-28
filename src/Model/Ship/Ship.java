@@ -16,6 +16,7 @@ public abstract class Ship implements Serializable {
 
     public boolean isSunk()
     {
+        // returns true if it's sunk
         return shipHealth==0;
     }
 
@@ -40,7 +41,7 @@ public abstract class Ship implements Serializable {
         Random random= new Random();
         Board boardInfo = new BoardImp();
         boolean deployed= false;
-        int shipDenotedInt = shipType+shipInstance;
+        int shipDenotedInt = shipType + shipInstance;  // let's for c1(carrier1), ship type = 0 and instance = 1, ship denotedInt = 0 + 1 = 1
 
         while(!deployed)
             {

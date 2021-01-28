@@ -50,6 +50,8 @@ public abstract class Player implements Serializable {
 
     public void loadShips()
     {
+        // loads 5 types of ships each of which has more than one instance in a arrayList namely listOfShips
+
         int[] shipQuantity= {2,3,5,8,10};
 
         for(int i=0; i<5; i++)
@@ -92,94 +94,30 @@ public abstract class Player implements Serializable {
 
     public void deployShips()
     {
+        // deploying the loaded ships in the player-board
         for(int i=0; i< listOfShips.size(); i++) {
             listOfShips.get(i).deployShip();
         }
     }
 
-    public int cellValueToType (int cellValue) {
-        if (  cellValue <= 2 ) {
-            return ShipInfo.carrierType;
-        } else if(cellValue <= 5 ) {
-            return ShipInfo.battleShipType;
-        } else if (cellValue <= 10) {
-            return ShipInfo.destroyerType;
-        } else if (cellValue <= 18) {
-            return ShipInfo.superPatrolType;
-        } else {
-            return ShipInfo.patrolBoatType;
-        }
-    }
-
-
-    public void performPlayerTurn (Player enemyPlayer,int posX, int posY) {
-
-        GameView gameView = new GameViewImp();
-        Board enemyBoard ;
-        ArrayList<Ship> enemyShipList ;
-        enemyBoard = enemyPlayer.getCurrentBoard();
-        enemyShipList = enemyPlayer.getListOfShips();
-
-        if(enemyBoard.isHit(posX, posY)) {
-            gameView.printHitMessage(playerType);
-            int cellValue = enemyBoard.getCellValue(posX, posY);
-            int shipType = cellValueToType(cellValue);
-            int shipInstanceNumber = cellValue - shipType;
-
-            for (Ship ship: enemyShipList ) {
-                if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
-                    ship.hitShip();
-                    points++;
-                    if(ship.isSunk()) {
-                        gameView.printSunkMessage(playerType);
-                        points++;
-                    }
-
-                }
-            }
-
-            enemyBoard.fire(posX,posY);
-
-
-        } else {
-
-
-            if(enemyBoard.getCellValue(posX, posY) == 0 || enemyBoard.getCellValue(posX, posY) == -5)
-            {
-                gameView.printAlreadyFiredMessage(playerType);
-            }
-            else{
-                gameView.printMissMessage(playerType);
-            }
-
-            enemyBoard.fire(posX,posY);
-
-        }
-    }
 
     public void increasePoint()
     {
+        // increase points for hit and sunk
         points++;
     }
 
     public String getPlayerName()
     {
+        // gets player's name from the object
         return playerName;
     }
 
     public int getPlayerType()
     {
+        // gets player's type from the object
         return playerType;
     }
 
-    public boolean isAllSunk() {
-        boolean allSunk = true;
-        for ( Ship ship: listOfShips ) {
-            if (!ship.isSunk()) {
-                allSunk = false;
-                break;
-            }
-        }
-        return  allSunk;
-    }
+
 }
