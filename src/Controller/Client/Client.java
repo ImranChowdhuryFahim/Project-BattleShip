@@ -563,9 +563,6 @@ public class Client {
         System.exit(-1);
     }
 
-    public  void terminateGame () {
-        System.exit(0);
-    }
 
 
 

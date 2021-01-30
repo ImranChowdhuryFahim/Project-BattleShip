@@ -563,12 +563,6 @@ public class Server {
     }
 
 
-
-    public  void terminateGame () {
-        System.exit(0);
-    }
-
-
     public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException {
         GameView gameView = new GameViewImp();
         Scanner scanner = new Scanner(System.in);
