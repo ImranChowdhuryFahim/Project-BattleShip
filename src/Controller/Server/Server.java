@@ -84,9 +84,6 @@ public class Server {
 
             if( timeElapse >= 300 ){ // game ends on 5th minute
                 gameView.showTimeOverMessage();
-
-                generateGameResultOnGameOver();
-
                 break;
 
 

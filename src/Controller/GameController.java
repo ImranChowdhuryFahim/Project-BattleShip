@@ -91,7 +91,6 @@ public class GameController {
 
             if( timeElapse >= 300 ){
                 gameView.showTimeOverMessage();
-                generateGameResultOnGameOver();
 
                 break;
 

@@ -89,8 +89,6 @@ public class Client {
 
             if( timeElapse >= 300 ){ // ends on 5th minute
                 gameView.showTimeOverMessage();
-                generateGameResultOnGameOver();
-
                 break;
             }
 
