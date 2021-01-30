@@ -44,7 +44,7 @@ public class Client {
     }
 
     public void initialize() throws IOException {  // connecting to the server
-
+        //initializes the socket connections
         try {
             client = new Socket("localhost",3000);
         } catch (IOException e) {
@@ -73,6 +73,12 @@ public class Client {
 
     public void playGame() throws IOException, ClassNotFoundException, InterruptedException {
 
+        /*
+            Controls the game flow
+            i.controls turn flow
+           ii. for each turn it checks if all ship is sunk, if 5 mins passes
+
+         */
         InitializeGame();
 
         long gameStartingTime = System.currentTimeMillis();
@@ -101,12 +107,12 @@ public class Client {
 
             posX=0;
             posY=0;
-            if(turnFlag ==0 ) // denote server player turn
+            if(turnFlag ==0 ) //0 denotes server player turn
             {
                 serversTurn();
 
             }
-            else {
+            else {  // 1 denotes client player turn
 
                 clientsTurn();
             }
@@ -131,6 +137,8 @@ public class Client {
     }
 
     private void clientsTurn() throws IOException, InterruptedException {
+        /* control left to human player to get row and col value, perform the turn based on user's input
+        and sends the update to the server */
 
         cellValue=-50;
         point=0;
@@ -241,7 +249,7 @@ public class Client {
 
 
     private void serversTurn() throws IOException {
-
+        // listens to server's turn
         System.out.println(enemy.getPlayerName()+"'s turn");
         int x,y,cell,point;
         boolean sunk,hit, allSunk;
@@ -303,6 +311,7 @@ public class Client {
 
     private void InitializeGame() throws IOException, ClassNotFoundException {
 
+        // initializes the game play for client side
         gameView.printBoardInitializationMessage();
         playerClient.initializeGameBoard();
         playerClient.loadShips();
@@ -332,6 +341,8 @@ public class Client {
 
 
     public int cellValueToType (int cellValue) {
+
+        // calculates ship type from current cell value
         if (  cellValue <= 2 ) {
             return ShipInfo.carrierType;
         }
@@ -351,6 +362,16 @@ public class Client {
 
     public boolean performPlayerTurn(Player enemyPlayer,int posX,int posY)
     {
+        /*
+         executes a player's turn
+            i. checks if it's a hit or not
+
+                i. find ship type and instance number
+                ii. identifies the ship
+                iii. increase points
+                 iv. checks if it's sunk or not
+
+         */
         boolean sunk =false;
         Board enemyBoard ;
         ArrayList<Ship> enemyShipList ;
@@ -419,6 +440,7 @@ public class Client {
 
     public boolean isAllShipSunk()
     {
+        // checks if all ships are sunk or not
         boolean allSunk = false;
         int sunk_count = 0;
         int totalShipCount = ShipInfo.getTotalShipCount();
@@ -462,6 +484,8 @@ public class Client {
 
 
     public  String getWinnerName() {
+
+        // gets winner name based on sunk count
         int sunk_count1 =0;
         int sunk_count2 =0;
         ArrayList<Ship> myShips = playerClient.getListOfShips();
