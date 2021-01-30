@@ -91,18 +91,7 @@ public class GameController {
 
             if( timeElapse >= 300 ){
                 gameView.showTimeOverMessage();
-                if(virtualPlayer.getPoints() > humanPlayer.getPoints()) {
-
-                    gameView.printWinMessageWithPlayerName(virtualPlayer.getPlayerName());
-                }
-                else if (virtualPlayer.getPoints() == humanPlayer.getPoints()) {
-                    delay(2);
-                    gameView.printWinMessageWithPlayerName(getWinnerName());
-                }
-                else {
-
-                    gameView.printYouWonMessage();
-                }
+                generateGameResultOnGameOver();
 
                 break;
 
@@ -129,12 +118,29 @@ public class GameController {
 
         if(isAllShipSunk())
         {
-
             gameView.showAllShipSunkMessage();
-            gameView.showGameOverMessage();
-            gameView.showWinnerName(winnerName);
         }
 
+        generateGameResultOnGameOver();
+
+    }
+
+
+    private void generateGameResultOnGameOver()
+    {
+        gameView.showGameOverMessage();
+        if(virtualPlayer.getPoints() > humanPlayer.getPoints()) {
+
+            gameView.printWinMessageWithPlayerName(virtualPlayer.getPlayerName());
+        }
+        else if (virtualPlayer.getPoints() == humanPlayer.getPoints()) {
+            delay(2);
+            gameView.printWinMessageWithPlayerName(getWinnerName());
+        }
+        else {
+
+            gameView.printYouWonMessage();
+        }
     }
 
     private void virtualPlayersTurn() {
@@ -352,38 +358,56 @@ public class GameController {
     }
 
     public  String getWinnerName() {  // deriving winner based on the sunk count
-        boolean allSunk = false;
+        String winnerName ="" ;
         int sunk_count1 =0;
         int sunk_count2 =0;
+        int[]  shipTypes = {ShipInfo.carrierType,ShipInfo.battleShipType,ShipInfo.destroyerType,ShipInfo.superPatrolType,ShipInfo.patrolBoatType};
         ArrayList<Ship> humanPlayerShips = humanPlayer.getListOfShips();
-        ArrayList<Ship> virtualPlayerShip = virtualPlayer.getListOfShips();
+        ArrayList<Ship> virtualPlayerShips = virtualPlayer.getListOfShips();
 
-        for(int i=0; i<humanPlayerShips.size(); i++)
+
+        for(int i=0; i<ShipInfo.getNumberOfShipTypes(); i++)
         {
-            if(humanPlayerShips.get(i).isSunk())
+            sunk_count1=0;
+            sunk_count2=0;
+            for(int k=0; k<humanPlayerShips.size(); k++)
             {
-                sunk_count1++;
+                if(humanPlayerShips.get(i).getShipType()==shipTypes[i] &&  humanPlayerShips.get(i).isSunk())
+                {
+                    sunk_count1++;
+                }
             }
-        }
 
-
-
-
-        for(int i=0; i<virtualPlayerShip.size(); i++)
-        {
-            if(virtualPlayerShip.get(i).isSunk())
+            for(int k=0; k<virtualPlayerShips.size(); k++)
             {
-                sunk_count2++;
+                if(virtualPlayerShips.get(i).getShipType()==shipTypes[i] && virtualPlayerShips.get(i).isSunk())
+                {
+                    sunk_count2++;
+                }
             }
+
+            if(sunk_count1 > sunk_count2) {
+
+                winnerName = humanPlayer.getPlayerName();
+                break;
+
+            } else if(sunk_count1 < sunk_count2) {
+
+                winnerName = virtualPlayer.getPlayerName();
+                break;
+            }
+
         }
 
-        if(sunk_count1 > sunk_count2) {
-            return humanPlayer.getPlayerName();
-        } else if(sunk_count1 < sunk_count2) {
-            return virtualPlayer.getPlayerName();
-        } else {
-            return "No one";
-        }
+
+
+
+        if(winnerName != "") return winnerName;
+        else return "no one";
+
+
+
+
     }
 
     public void performPlayerTurn ( Player currentPlayer, Player enemyPlayer, int posX, int posY) {
