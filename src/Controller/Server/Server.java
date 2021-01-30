@@ -119,7 +119,7 @@ public class Server {
 
 
     private void generateGameResultOnGameOver()
-    {
+    { // when game is over it generates the result
 
         gameView.showGameOverMessage();
 
@@ -346,6 +346,16 @@ public class Server {
 
     public void performOpponentTurn(Player selfPlayer , int posX, int posY)
     {
+                /*
+         executes a player's turn
+            i. checks if it's a hit or not
+
+                i. find ship type and instance number
+                ii. identifies the ship
+                iii. increase points
+                 iv. checks if it's sunk or not
+
+         */
         Board selfBoard = selfPlayer.getCurrentBoard();
         ArrayList<Ship> selfShipList = selfPlayer.getListOfShips();
 
