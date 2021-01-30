@@ -128,6 +128,7 @@ public class GameController {
 
     private void generateGameResultOnGameOver()
     {
+        // when game is over it generates the result
         gameView.showGameOverMessage();
         if(virtualPlayer.getPoints() > humanPlayer.getPoints()) {
 
