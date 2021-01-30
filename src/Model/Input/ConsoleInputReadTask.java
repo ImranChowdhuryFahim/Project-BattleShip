@@ -5,27 +5,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 
-public class ConsoleInputReadTask implements Callable<String> {
+public class ConsoleInputReadTask implements Callable<String> { // thread
     public String call() throws IOException {
-        BufferedReader br = new BufferedReader(
+        BufferedReader buffer = new BufferedReader( // bufferedReader lets us know when readLine() can be called without blocking
                 new InputStreamReader(System.in));
-//        System.out.println("ConsoleInputReadTask run() called.");
+
         String input = null;
         do {
-//            System.out.println("Please type something: ");
+
             try {
-                // wait until we have data to complete a readLine()
-                while (!br.ready()) {
+                // it waits until we have data to complete a readLine() safely, so that the system is not in the blocking state
+                while (!buffer.ready()) {
                     Thread.sleep(200);
                 }
-                input = br.readLine();
+                input = buffer.readLine();
             } catch (InterruptedException e) {
-//                System.out.println("ConsoleInputReadTask() cancelled");
+//                the thread is cancelled if found exception
                 return null;
             }
-        } while ("".equals(input));
-//        System.out.println("Thank You for providing input!");
+        } while ("".equals(input)); // will not read the ""
 
+//        return the string input if found
         return input;
     }
 }

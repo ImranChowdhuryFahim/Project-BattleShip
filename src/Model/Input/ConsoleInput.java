@@ -7,34 +7,32 @@ public class ConsoleInput {
     private final int timeout;
     private final TimeUnit unit;
 
-    public ConsoleInput(int tries, int timeout, TimeUnit unit) {
-        this.tries = tries;
+    public ConsoleInput(int t, int timeout, TimeUnit unit) {
+        this.tries = t;
         this.timeout = timeout;
         this.unit = unit;
     }
 
     public String readLine() throws InterruptedException {
-        ExecutorService ex = Executors.newSingleThreadExecutor();
+        ExecutorService executor = Executors.newSingleThreadExecutor(); // executors, to get back the input in the calling thread
         String input = null;
         try {
             // start working
             for (int i = 0; i < tries; i++) {
-//                System.out.println(String.valueOf(i + 1) + ". loop");
-                Future<String> result = ex.submit(
+
+                Future<String> asyncResult = executor.submit( // asynchronous task result
                         new ConsoleInputReadTask());
                 try {
-                    input = result.get(timeout, unit);
+                    input = asyncResult.get(timeout, unit);
                     break;
                 } catch (ExecutionException e) {
                     e.getCause().printStackTrace();
                 } catch (TimeoutException e) {
-//                    System.out.println("Cancelling reading task");
-                    result.cancel(true);
-//                    System.out.println("\nThread cancelled. input is null");
+                    asyncResult.cancel(true);
                 }
             }
         } finally {
-            ex.shutdownNow();
+            executor.shutdownNow();
         }
         return input;
     }
