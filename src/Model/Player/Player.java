@@ -38,6 +38,9 @@ public abstract class Player implements Serializable {
         return points;
     }
 
+    public void setPoints(int points){
+        this.points = points;
+    }
 
     public BoardImp getCurrentBoard()
     {

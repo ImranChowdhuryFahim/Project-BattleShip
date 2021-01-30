@@ -25,7 +25,7 @@ public class Server {
     private ObjectInputStream objectInputStreamFromClient;
     private ObjectOutputStream objectOutputStreamToClient;
     private String winnerName;
-    private int posX=0,posY=0,enemyPoint=0;
+    private int posX=0,posY=0;
     private int turnFlag=0;
     private int cellValue=-50,point=0;
     private boolean sunk=false;
@@ -84,18 +84,8 @@ public class Server {
 
             if( timeElapse >= 300 ){ // game ends on 5th minute
                 gameView.showTimeOverMessage();
-                if(enemyPoint > serverPlayer.getPoints()) {
 
-                    gameView.printWinMessageWithPlayerName(enemy.getPlayerName());
-                }
-                else if (enemyPoint == serverPlayer.getPoints()) {
-                    delay(2);
-                    gameView.printWinMessageWithPlayerName(getWinnerName());
-                }
-                else {
-
-                    gameView.printYouWonMessage();
-                }
+                generateGameResultOnGameOver();
 
                 break;
 
@@ -116,25 +106,35 @@ public class Server {
 
         }
 
-
-
-
-
-
         if(isAllShipSunk())
         {
             gameView.showAllShipSunkMessage();
-            gameView.showGameOverMessage();
-            gameView.printYouWonMessage();
-            dataOutputStreamToClient.writeInt(-101);
-            dataOutputStreamToClient.writeInt(posY);
-            dataOutputStreamToClient.writeInt(cellValue);
-            dataOutputStreamToClient.writeBoolean(sunk);
-            dataOutputStreamToClient.writeBoolean(hit);
-            dataOutputStreamToClient.writeInt(point);
         }
 
+        generateGameResultOnGameOver();
 
+
+
+    }
+
+
+    private void generateGameResultOnGameOver()
+    {
+
+        gameView.showGameOverMessage();
+
+        if(enemy.getPoints() > serverPlayer.getPoints()) {
+
+            gameView.printWinMessageWithPlayerName(enemy.getPlayerName());
+        }
+        else if (enemy.getPoints() == serverPlayer.getPoints()) {
+            delay(2);
+            gameView.printWinMessageWithPlayerName(getWinnerNameBasedOnSunkCount());
+        }
+        else {
+
+            gameView.printYouWonMessage();
+        }
     }
 
 
@@ -173,52 +173,37 @@ public class Server {
     private void clientsTurn() throws IOException {
         // listens to client's turn
         gameView.printTurnMessageWithName(enemy.getPlayerName());
-        int x, y, cell, point;
-        boolean sunk,hit;
+        int x, y;
         x=dataInputStreamFromClient.readInt();
         y=dataInputStreamFromClient.readInt();
-        cell=dataInputStreamFromClient.readInt();
-        sunk = dataInputStreamFromClient.readBoolean();
-        hit = dataInputStreamFromClient.readBoolean();
-        point = dataInputStreamFromClient.readInt();
 
+        System.out.println(x);
+        System.out.println(y);
         //no input so its my turn
-        if(x != -101) {
 
-            if(x==0 || y==0)
-            {
-                gameView.printOpponentDidNotResponseMessage();
-                turnFlag =0;
-            }
-            else if(hit)
-            {
-                gameView.showOpponentsHitMessage();
-                if(sunk)
-                {
-                    gameView.showHumanOpponentPlayerSunkMessage();
-                }
-                enemyPoint=point;
-
-                gameView.showPointsWithName(serverPlayer.getPlayerName(), serverPlayer.getPoints());
-                gameView.showPointsWithName(enemy.getPlayerName(), enemyPoint);
-                turnFlag =1;
-            }
-            else
-            {
-
-                gameView.showOpponentsMissMessage();
-                gameView.showPointsWithName(serverPlayer.getPlayerName(),serverPlayer.getPoints());
-                gameView.showPointsWithName(enemy.getPlayerName(),enemyPoint);
-
-
-                turnFlag =0;
-            }
+        if(x==0 || y==0)
+        {
+            gameView.printOpponentDidNotResponseMessage();
+            turnFlag =0;
         }
-        else  {
 
-            gameView.printWinMessageWithPlayerName(enemy.getPlayerName());
-            terminateGame();
+        else
+        {
+            if(serverPlayer.getCurrentBoard().isHit(x,y))
+            {
+                turnFlag = 1;
+            }
+            else {
+                turnFlag = 0;
+            }
+
+            performOpponentTurn(serverPlayer,x,y);
+
+            gameView.showPointsWithName(serverPlayer.getPlayerName(), serverPlayer.getPoints());
+            gameView.showPointsWithName(enemy.getPlayerName(), enemy.getPoints());
         }
+
+
 
     }
 
@@ -315,17 +300,13 @@ public class Server {
         }
 
         gameView.showPointsWithName(serverPlayer.getPlayerName(),serverPlayer.getPoints());
-        gameView.showPointsWithName(enemy.getPlayerName(),enemyPoint);
+        gameView.showPointsWithName(enemy.getPlayerName(),enemy.getPoints());
         if(posX>0 && posY>0)
         {
             gameView.showEnemyBoard(enemy.getCurrentBoard());
         }
         dataOutputStreamToClient.writeInt(posX);
         dataOutputStreamToClient.writeInt(posY);
-        dataOutputStreamToClient.writeInt(cellValue);
-        dataOutputStreamToClient.writeBoolean(sunk);
-        dataOutputStreamToClient.writeBoolean(hit);
-        dataOutputStreamToClient.writeInt(point);
 
     }
 
@@ -362,6 +343,40 @@ public class Server {
         }
     }
 
+
+    public void performOpponentTurn(Player selfPlayer , int posX, int posY)
+    {
+        Board selfBoard = selfPlayer.getCurrentBoard();
+        ArrayList<Ship> selfShipList = selfPlayer.getListOfShips();
+
+        if(selfBoard.isHit(posX,posY))
+        {
+            gameView.showOpponentsHitMessage();
+            int cellValue = selfBoard.getCellValue(posX, posY);
+            int shipType = cellValueToType(cellValue);
+            int shipInstanceNumber = cellValue - shipType;
+
+            for (Ship ship: selfShipList ) {
+                if( ship.getShipType() == shipType && shipInstanceNumber == ship.getShipInstance()) {
+                    ship.hitShip();
+                    enemy.increasePoint();
+                    if(ship.isSunk()) {
+
+                        gameView.showHumanOpponentPlayerSunkMessage();
+                        enemy.increasePoint();
+                    }
+
+                }
+            }
+            selfBoard.fire(posX,posY);
+        }
+        else
+        {
+            gameView.showOpponentsMissMessage();
+            selfBoard.fire(posX,posY);
+        }
+
+    }
 
 
 
@@ -443,8 +458,8 @@ public class Server {
     {
         // checks if all ships are sunk or not
         allSunk = false;
-        int sunk_count =0;
-        int totalShipCount= ShipInfo.getTotalShipCount();
+        int sunk_count = 0;
+        int totalShipCount = ShipInfo.getTotalShipCount();
         ArrayList<Ship> myShips = serverPlayer.getListOfShips();
         ArrayList<Ship> enemyShips = enemy.getListOfShips();
 
@@ -483,40 +498,58 @@ public class Server {
 
     }
 
-    public  String getWinnerName() {
+    public  String getWinnerNameBasedOnSunkCount() {
         // gets the winner name based on sunk count
+        String winnerName ="" ;
         boolean allSunk = false;
         int sunk_count1 =0;
         int sunk_count2 =0;
+
+        int[]  shipTypes = {ShipInfo.carrierType,ShipInfo.battleShipType,ShipInfo.destroyerType,ShipInfo.superPatrolType,ShipInfo.patrolBoatType};
         ArrayList<Ship> myShips = serverPlayer.getListOfShips();
         ArrayList<Ship> enemyShips = enemy.getListOfShips();
 
-        for(int i=0; i<myShips.size(); i++)
+        for(int i=0; i< ShipInfo.getNumberOfShipTypes(); i++)
         {
-            if(myShips.get(i).isSunk())
+
+            sunk_count1 = 0;
+            sunk_count2 = 0;
+
+            for(int k=0; k<myShips.size(); k++)
             {
-                sunk_count1++;
+                if(myShips.get(k).getShipType()==shipTypes[i] && myShips.get(k).isSunk())
+                {
+                    sunk_count1++;
+                }
             }
-        }
 
-
-
-
-        for(int i=0; i<enemyShips.size(); i++)
-        {
-            if(enemyShips.get(i).isSunk())
+            for(int k=0; k<enemyShips.size(); k++)
             {
-                sunk_count2++;
+                if(enemyShips.get(k).getShipType()==shipTypes[i] && enemyShips.get(k).isSunk())
+                {
+                    sunk_count2++;
+                }
             }
+
+            if(sunk_count1 > sunk_count2)
+            {
+                winnerName = enemy.getPlayerName();
+                break;
+            }
+
+            else if(sunk_count1 < sunk_count2)
+            {
+                winnerName = serverPlayer.getPlayerName();
+                break;
+            }
+
         }
 
-        if(sunk_count1 > sunk_count2) {
-            return enemy.getPlayerName();
-        } else if(sunk_count1 < sunk_count2) {
-            return serverPlayer.getPlayerName();
-        } else {
-            return "No one";
-        }
+
+        if(winnerName != "") return winnerName;
+        else return "no one";
+
+
     }
 
 

@@ -29,4 +29,8 @@ public class ShipInfo {
     {
         return carrierQuantity+battleShipQuantity+destroyerQuantity+superPatrolQuantity+patrolBoatQuantity;
     }
+    public static int getNumberOfShipTypes()
+    {
+        return 5;
+    }
 }
